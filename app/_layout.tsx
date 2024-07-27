@@ -1,37 +1,53 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Stack } from "expo-router";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { StatusBar } from "expo-status-bar";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  const [fontsLoaded, errorFontsLoad] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   useEffect(() => {
-    if (loaded) {
+    if (errorFontsLoad) {
+      throw errorFontsLoad;
+    }
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, errorFontsLoad]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
+  const backgroundColor = useThemeColor({}, "primary_background");
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <>
+      <StatusBar style="light" backgroundColor={backgroundColor} />
+      <SafeAreaView style={{ backgroundColor, height: "100%" }}>
+        <ScrollView contentContainerStyle={{ height: "100%" }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }
