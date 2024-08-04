@@ -16,6 +16,17 @@ export const Colors = {
     surface_text: '#898989',
     surface_background: '#FFFFFF',
 
+
+    primary_outline_text: '#8D2210',
+    primary_outline_background: '#FFFFFF',
+
+    seconda_outlinery_text: '#8D2210',
+    seconda_outlinery_background: '#CA9F14',
+
+    surface_outline_text: '#FFFFFF',
+    surface_outline_background: '#898989',
+
+    none: '#00000000',
   },
   dark: {
 
@@ -28,6 +39,17 @@ export const Colors = {
     surface_text: '#898989',
     surface_background: '#FFFFFF',
 
+
+    primary_outline_text: '#8D2210',
+    primary_outline_background: '#FFFFFF',
+
+    seconda_outlinery_text: '#8D2210',
+    seconda_outlinery_background: '#CA9F14',
+
+    surface_outline_text: '#FFFFFF',
+    surface_outline_background: '#898989',
+
+    none: '#00000000',
   },
 };
 

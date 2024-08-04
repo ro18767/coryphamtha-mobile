@@ -26,6 +26,7 @@ export function ThemedText({
     <Text
       style={[
         { color },
+        styles.font_default,
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
@@ -39,6 +40,9 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
+  font_default: {
+    fontFamily: 'Inter'
+  },
   default: {
     fontSize: 16,
     lineHeight: 24,
