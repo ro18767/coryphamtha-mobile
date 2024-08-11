@@ -36,7 +36,8 @@ export default function RootLayout() {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flex: 1 }}>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="+not-found" />
+          <Stack.Screen name="(home)/index" />
+          <Stack.Screen name="+not-found" />
           </Stack>
         </ScrollView>
       </SafeAreaView>

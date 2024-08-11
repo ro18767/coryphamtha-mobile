@@ -10,8 +10,8 @@ export const Colors = {
     primary_text: '#FFFFFF',
     primary_background: '#8D2210',
 
-    secondary_text: '#CA9F14',
-    secondary_background: '#8D2210',
+    secondary_text: '#FFFFFF',
+    secondary_background: '#CA9F14',
 
     surface_text: '#898989',
     surface_background: '#FFFFFF',
@@ -20,8 +20,8 @@ export const Colors = {
     primary_outline_text: '#8D2210',
     primary_outline_background: '#FFFFFF',
 
-    seconda_outlinery_text: '#8D2210',
-    seconda_outlinery_background: '#CA9F14',
+    secondary_outline_text: '#CA9F14',
+    secondary_outline_background: '#FFFFFF',
 
     surface_outline_text: '#FFFFFF',
     surface_outline_background: '#898989',
@@ -33,21 +33,21 @@ export const Colors = {
     primary_text: '#FFFFFF',
     primary_background: '#8D2210',
 
-    secondary_text: '#CA9F14',
-    secondary_background: '#8D2210',
+    secondary_text: '#FFFFFF',
+    secondary_background: '#CA9F14',
 
-    surface_text: '#898989',
-    surface_background: '#FFFFFF',
+    surface_text: '#FFFFFF',
+    surface_background: '#898989',
 
 
     primary_outline_text: '#8D2210',
     primary_outline_background: '#FFFFFF',
 
-    seconda_outlinery_text: '#8D2210',
-    seconda_outlinery_background: '#CA9F14',
+    secondary_outline_text: '#CA9F14',
+    secondary_outline_background: '#FFFFFF',
 
-    surface_outline_text: '#FFFFFF',
-    surface_outline_background: '#898989',
+    surface_outline_text: '#898989',
+    surface_outline_background: '#FFFFFF',
 
     none: '#00000000',
   },
