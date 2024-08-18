@@ -4,8 +4,6 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
-import Header from "@/components/template/Header";
-import Footer from "@/components/template/Footer";
 
 const data = {
   category: {
