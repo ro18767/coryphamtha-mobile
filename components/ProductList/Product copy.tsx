@@ -5,15 +5,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
-export default function Product({
-  title,
-  price,
-  imageUrl,
-}: {
-  title: string;
-  price: number;
-  imageUrl?: string | URL | null;
-}) {
+export default function Product() {
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
@@ -69,7 +61,7 @@ export default function Product({
           />
         </View>
         <ThemedText style={styles.product__title} colorName="surface_text">
-          {title}
+          Бантик оксамитовий
         </ThemedText>
 
         <ThemedText
@@ -83,7 +75,7 @@ export default function Product({
             style={styles.product__price}
             colorName="secondary_outline_text"
           >
-           {price}₴
+            268₴
           </ThemedText>
           <IconButton
             pressableProps={{
@@ -126,10 +118,10 @@ const styles = StyleSheet.create({
   },
   product: {
     width: "100%",
-    paddingTop: 4,
-    paddingLeft: 4,
-    paddingRight: 4,
-    paddingBottom: 8,
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 28,
     borderWidth: 1,
     borderColor: "#00000000",
   },

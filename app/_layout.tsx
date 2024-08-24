@@ -11,6 +11,7 @@ import StatusBarSetup from "@/components/texnical/StatusBarSetup";
 import Header from "@/components/template/Header";
 import Footer from "@/components/template/Footer";
 import { ThemedView } from "@/components/ThemedView";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -39,7 +40,7 @@ export default function RootLayout({ children }: any) {
       <SafeAreaView style={{ flex: 1 }}>
         <Header />
         <ThemedView colorName="surface_background" style={{ flex: 1 }}>
-          <ScrollView style={{ flex: 1 }}>
+          <ScrollView ref={mainScrollViewRef} style={{ flex: 1 }}>
             <View style={{ flex: 1 }}>
               <Slot />
             </View>

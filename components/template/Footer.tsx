@@ -6,6 +6,7 @@ export default function Footer() {
   return (
     <>
       <ThemedView style={styles.footer} colorName="primary_background">
+        
         <ThemedText colorName="primary_text">FOOTER</ThemedText>
       </ThemedView>
     </>
