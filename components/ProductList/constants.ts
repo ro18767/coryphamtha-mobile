@@ -1,1 +1,0 @@
-export const DEFAULT_PRODUCT_FILTER_LIMIT = 8;

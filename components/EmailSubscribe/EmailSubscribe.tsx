@@ -30,6 +30,7 @@ export default function EmailSubscribe() {
             value={text}
             placeholder="Ваш e-mail"
             keyboardType="email-address"
+            inputMode="email"
           />
         </ThemedView>
         <IconButton

@@ -1,43 +1,31 @@
-import EmailSubscribe from "@/components/EmailSubscribe/EmailSubscribe";
-import { DEFAULT_PRODUCT_FILTER_LIMIT } from "@/components/ProductList/constants";
-import ProductList from "@/components/ProductList/ProductList";
-import ProductNavigation from "@/components/ProductList/ProductNavigation";
-import Filter from "@/components/template/Filter";
-import { useState } from "react";
-import { StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { ThemedText } from "@/components/ThemedText";
+import { Link } from "expo-router";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
-  const { offset: offsetParam, limit: limitParam } = useLocalSearchParams<{
-    offset: string;
-    limit: string;
-  }>();
-
-  const offsetDirty = Number.parseInt(offsetParam ?? "") || 0;
-  console.log(offsetDirty);
-  
-  const offset = Math.max(0, offsetDirty - (offsetDirty % DEFAULT_PRODUCT_FILTER_LIMIT));
-  const limitDirty = Math.floor(Number.parseInt(limitParam ?? "") || DEFAULT_PRODUCT_FILTER_LIMIT);
-  const limit = Math.max(DEFAULT_PRODUCT_FILTER_LIMIT, limitDirty - (limitDirty % DEFAULT_PRODUCT_FILTER_LIMIT));
-  const [totalCount, setTotalCount] = useState(20);
-
   return (
-    <>
-      <Filter />
-      <ProductList
-        offset={offset}
-        limit={limit}
-        totalCount={totalCount}
-      />
-      <ProductNavigation
-        offset={offset}
-        limit={limit}
-        totalCount={totalCount}
-      />
-      <EmailSubscribe />
-    </>
+    <View style={styles.container}>
+      <Link href={"/filter"} style={styles.link}>
+        <Text>Filter</Text>
+      </Link>
+
+      <Link href={"/popup1"} style={styles.link}>
+        <Text>popup1</Text>
+      </Link>
+      <Link href={"/popup2"} style={styles.link}>
+        <Text>popup2</Text>
+      </Link>
+      <Link href={"/home"} style={styles.link}>
+        <Text>home</Text>
+      </Link>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  link: {
+    fontSize: 20,
+  },
+});

@@ -4,6 +4,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
+import { Sizes } from "@/constants/Sizes";
 
 export default function Header() {
   return (
@@ -54,7 +55,13 @@ export default function Header() {
         BOTANICA
       </TextButton>
 
-      <View style={[styles.header__button, styles.header__button_icon, styles.header__button_icon_empty]}></View>
+      <View
+        style={[
+          styles.header__button,
+          styles.header__button_icon,
+          styles.header__button_icon_empty,
+        ]}
+      ></View>
 
       <IconButton
         pressableProps={{
@@ -78,9 +85,10 @@ const styles = StyleSheet.create({
   header: {
     display: "flex",
     flexDirection: "row",
-    justifyContent:"space-between",
-    paddingVertical: 16,
+    justifyContent: "space-between",
     paddingHorizontal: 24,
+    height: Sizes.HEADER_HEIGHT,
+    alignItems: "center",
   },
   header__button: {
     height: 40,
@@ -91,8 +99,7 @@ const styles = StyleSheet.create({
   header__button_icon_empty: {
     flexShrink: 1,
   },
-  header__button_logo: {
-  },
+  header__button_logo: {},
   header__button_logo__text: {
     fontFamily: "IrishGrover",
     fontSize: 32,
