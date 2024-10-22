@@ -19,7 +19,7 @@ import { Sizes } from "@/constants/Sizes";
 import PopupSignIn from "./PopupSignIn";
 import React from "react";
 import { usePopoverContext } from "@/context/PopoverContext";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 type ProductCategory = {
   title: string;
   link: string;
@@ -235,6 +235,11 @@ function PopupCategoryItem({
   openCatArr: any;
   setOpenCatArr: any;
 }) {
+  const popoverContext = usePopoverContext();
+  if (!popoverContext) return;
+
+  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+    popoverContext;
   const { link, title, source, children } = item;
   const opened = useMemo(() => openCatArr[level] === item, [openCatArr]);
   useEffect(() => {
@@ -280,7 +285,18 @@ function PopupCategoryItem({
           </View>
         </ViewButton>
       ) : (
-        <Link href={link} style={styles.link_row_wrap}>
+        <ViewButton
+          conteinerProps={{
+            style: styles.link_row_wrap,
+            colorName: "secondary_outline_background",
+          }}
+          pressableProps={{
+            onPress: () => {
+              setPopoverVisible(false);
+              router.navigate(link);
+            },
+          }}
+        >
           <View style={[styles.link_row]}>
             <View style={[styles.icon_wrap]}>
               <Image source={source} style={[styles.icon]} />
@@ -292,7 +308,7 @@ function PopupCategoryItem({
               {title}
             </ThemedText>
           </View>
-        </Link>
+        </ViewButton>
       )}
 
       {opened && children && children.length > 0
