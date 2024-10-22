@@ -1,18 +1,31 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
+import PopupMenu from "../Popup/PopupMenu";
+import PopupCategory from "../Popup/PopupCategory";
+import { usePopoverContext } from "@/context/PopoverContext";
 
 export default function Header() {
+  const popoverContext = usePopoverContext();
+  if (!popoverContext) return;
+
+  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+    popoverContext;
+
   return (
     <ThemedView style={styles.header} colorName="primary_background">
       <IconButton
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
-          onPress: () => {},
+          onPress: () => {
+            popoverComponentRef.current = PopupCategory;
+            setPopoverData({});
+            setPopoverVisible(true);
+          },
         }}
         conteinerProps={{
           style: styles.header__button__container,
@@ -41,7 +54,9 @@ export default function Header() {
       <TextButton
         pressableProps={{
           style: [styles.header__button, styles.header__button_logo],
-          onPress: () => {},
+          onPress: () => {
+            router.navigate("/");
+          },
         }}
         conteinerProps={{
           style: styles.header__button__container,
@@ -66,7 +81,11 @@ export default function Header() {
       <IconButton
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
-          onPress: () => {},
+          onPress: () => {
+            popoverComponentRef.current = PopupMenu;
+            setPopoverData({});
+            setPopoverVisible(true);
+          },
         }}
         conteinerProps={{
           style: styles.header__button__container,

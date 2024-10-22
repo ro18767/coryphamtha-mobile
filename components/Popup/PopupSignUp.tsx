@@ -9,6 +9,7 @@ import TextButton from "../buttons/TextButton";
 import ViewButton from "../buttons/ViewButton";
 import { Sizes } from "@/constants/Sizes";
 import PopupSignIn from "./PopupSignIn";
+import React from "react";
 
 export default function PopupSignUp() {
   const popupContext = usePopupContext();

@@ -9,24 +9,22 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
 
 export default function HomeDescription() {
-  // const color = useThemeColor({}, "surface_text");
-  // const borderColor = useThemeColor(
-  //   {
-  //     light: "#D9D9D9",
-  //     dark: "#D9D9D9",
-  //   },
-  //   "surface_outline_background"
-  // );
+  const backgroundColor = useThemeColor(
+    {
+      light: "#000000",
+      dark: "#000000",
+    },
+    "none"
+  );
   return (
     <View
       style={[
         styles.conteiner,
         {
-          backgroundColor: "#000000",
+          backgroundColor,
         },
       ]}
     >
-      <View style={[]}></View>
       <View style={[styles.bg_wrap]}>
         <Image
           style={[styles.bg_image]}

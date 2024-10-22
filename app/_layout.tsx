@@ -13,6 +13,7 @@ import Footer from "@/components/template/Footer";
 import { ThemedView } from "@/components/ThemedView";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import PopupProvider, { usePopupContext } from "@/context/PopupContext";
+import PopoverProvider, { usePopoverContext } from "@/context/PopoverContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,7 +41,9 @@ export default function RootLayout({ children }: any) {
       <StatusBarSetup />
       <SafeAreaView style={{ flex: 1 }}>
         <PopupProvider>
-          <Children />
+          <PopoverProvider>
+            <Children />
+          </PopoverProvider>
         </PopupProvider>
       </SafeAreaView>
     </>
@@ -50,8 +53,13 @@ export default function RootLayout({ children }: any) {
 function Children({ children }: any) {
   const popupContext = usePopupContext();
   if (!popupContext) return;
+  const popoverContext = usePopoverContext();
+  if (!popoverContext) return;
 
   const { popupVisible, popupData, popupComponentRef } = popupContext;
+
+  const { popoverVisible, popoverData, popoverComponentRef } = popoverContext;
+
   useEffect(() => {
     console.log(popupVisible);
     console.log(popupData);
@@ -74,6 +82,9 @@ function Children({ children }: any) {
       </ThemedView>
       {popupVisible && popupComponentRef.current && popupData ? (
         <popupComponentRef.current data={popupData} />
+      ) : null}
+      {popoverVisible && popoverComponentRef.current && popoverData ? (
+        <popoverComponentRef.current data={popoverData} />
       ) : null}
     </>
   );

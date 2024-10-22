@@ -8,6 +8,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import TextButton from "../buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
 import PopupSignUp from "./PopupSignUp";
+import React from "react";
 
 export default function PopupSignIn() {
   const popupContext = usePopupContext();
