@@ -6,6 +6,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import TextButton from "@/components/buttons/TextButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import PopupBuy from "@/components/Popup/PopupBuy";
+import { usePopupContext } from "@/context/PopupContext";
 
 export default function ProductPage() {
   return (
@@ -20,6 +22,10 @@ export function ProductDisplay() {
   const { product_id } = useLocalSearchParams<{
     product_id: string;
   }>();
+  const popupContext = usePopupContext();
+  if (!popupContext) return;
+
+  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const backgroundColor = useThemeColor({}, "secondary_outline_text");
@@ -93,7 +99,12 @@ export function ProductDisplay() {
               style: styles.container__form__submit_button_wrap,
             }}
             pressableProps={{
-              onPress: () => {},
+              onPress: () => {console.log('test');
+              
+                popupComponentRef.current = PopupBuy;
+                setPopupData({});
+                setPopupVisible(true);
+              },
             }}
             conteinerProps={{
               style: [

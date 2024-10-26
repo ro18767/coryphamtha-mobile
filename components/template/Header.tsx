@@ -8,14 +8,17 @@ import { Sizes } from "@/constants/Sizes";
 import PopupMenu from "../Popup/PopupMenu";
 import PopupCategory from "../Popup/PopupCategory";
 import { usePopoverContext } from "@/context/PopoverContext";
+import { usePopupContext } from "@/context/PopupContext";
 
 export default function Header() {
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
+  const popupContext = usePopupContext();
+  if (!popupContext) return;
 
   const { popoverComponentRef, setPopoverData, setPopoverVisible } =
     popoverContext;
-
+  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
   return (
     <ThemedView style={styles.header} colorName="primary_background">
       <IconButton
@@ -55,6 +58,8 @@ export default function Header() {
         pressableProps={{
           style: [styles.header__button, styles.header__button_logo],
           onPress: () => {
+            setPopoverVisible(false);
+            setPopupVisible(false);
             router.navigate("/");
           },
         }}

@@ -14,6 +14,9 @@ export default function Index() {
       <Link href={"/popup2"} style={styles.link}>
         <Text>popup2</Text>
       </Link>
+      <Link href={"/popup3"} style={styles.link}>
+        <Text>popup3</Text>
+      </Link>
       <Link href={"/home"} style={styles.link}>
         <Text>home</Text>
       </Link>
@@ -34,6 +37,9 @@ export default function Index() {
       </Link>
       <Link href={"/favorite"} style={styles.link}>
         <Text>favorite</Text>
+      </Link>
+      <Link href={"/account"} style={styles.link}>
+        <Text>account</Text>
       </Link>
     </View>
   );
