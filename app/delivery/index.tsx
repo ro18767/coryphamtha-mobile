@@ -25,6 +25,9 @@ export default function NotFoundScreen() {
               source={require("@/assets/images/backgrounds/not-found-image.png")}
             />
           </View>
+          <Link href="/">
+            <Text>Go to home screen!</Text>
+          </Link>
         </View>
       </ScrollView>
     </>
