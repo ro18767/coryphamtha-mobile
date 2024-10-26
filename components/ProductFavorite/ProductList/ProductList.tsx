@@ -4,15 +4,7 @@ import Product from "./Product";
 import { useEffect, useState } from "react";
 import { URL_BASE } from "@/constants/glabals";
 
-export default function ProductList({
-  offset,
-  limit,
-  totalCount,
-}: {
-  offset: number;
-  limit: number;
-  totalCount: number;
-}) {
+export default function ProductList(){
   const [data, setData] = useState(null);
   useEffect(() => {
     fetch(`${URL_BASE}/api/products`)

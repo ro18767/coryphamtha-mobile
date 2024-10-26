@@ -20,6 +20,21 @@ export default function Index() {
       <Link href={"/products/1"} style={styles.link}>
         <Text>product</Text>
       </Link>
+      <Link href={"/return_polisy"} style={styles.link}>
+        <Text>return_polisy</Text>
+      </Link>
+      <Link href={"/payments"} style={styles.link}>
+        <Text>payments</Text>
+      </Link>
+      <Link href={"/delivery_across_ukraine"} style={styles.link}>
+        <Text>delivery_across_ukraine</Text>
+      </Link>
+      <Link href={"/thank_you"} style={styles.link}>
+        <Text>thank_you</Text>
+      </Link>
+      <Link href={"/favorite"} style={styles.link}>
+        <Text>favorite</Text>
+      </Link>
     </View>
   );
 }

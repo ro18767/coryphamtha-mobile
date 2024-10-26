@@ -9,11 +9,7 @@ export default function () {
       <View style={styles.page_wrap}>
         <View>
           <ThemedText style={styles.title} colorName="secondary_outline_text">
-            404
-          </ThemedText>
-
-          <ThemedText style={styles.title} colorName="secondary_outline_text">
-            Здається, що щось пішло не так..
+            Дякую, що обрали наш магазин!
           </ThemedText>
         </View>
 
@@ -21,14 +17,13 @@ export default function () {
           <Image
             style={[styles.bg_image]}
             resizeMode="contain"
-            source={require("@/assets/images/backgrounds/not-found-image.png")}
+            source={require("@/assets/images/backgrounds/thank-you-image.png")}
           />
         </View>
       </View>
     </>
   );
 }
-
 
 const styles = StyleSheet.create({
   title: {
