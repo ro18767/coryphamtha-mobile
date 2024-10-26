@@ -17,6 +17,9 @@ export default function Index() {
       <Link href={"/home"} style={styles.link}>
         <Text>home</Text>
       </Link>
+      <Link href={"/products/1"} style={styles.link}>
+        <Text>product</Text>
+      </Link>
     </View>
   );
 }

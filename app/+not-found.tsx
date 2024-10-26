@@ -1,3 +1,4 @@
+import { ThemedText } from "@/components/ThemedText";
 import { Link, Stack } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -8,7 +9,12 @@ export default function NotFoundScreen() {
       <ScrollView style={{ flex: 1 }}>
         <Stack.Screen options={{ headerShown: true, title: "Oops!" }} />
         <View>
-          <Text>This screen doesn't exist.</Text>
+          <ThemedText
+          
+            colorName="secondary_outline_text"
+          >
+            404
+          </ThemedText>
           <Link href="/">
             <Text>Go to home screen!</Text>
           </Link>
@@ -18,4 +24,6 @@ export default function NotFoundScreen() {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+
+});
