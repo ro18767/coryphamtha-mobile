@@ -17,6 +17,8 @@ export default function Product({
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
+  console.log(imageUrl);
+  
   return (
     <View style={styles.product_wrap_space}>
       <ViewButton
@@ -40,10 +42,14 @@ export default function Product({
       >
         <View style={styles.product__preview}>
           <View style={styles.product__preview__img_wrap}>
-            <Image
-              style={styles.product__preview__img}
-              source={require("@/assets/images/example/image 74.png")}
-            />
+            {imageUrl ? (
+              <Image
+                style={styles.product__preview__img}
+                source={{
+                  uri: imageUrl.toString(),
+                }}
+              />
+            ) : null}
           </View>
           <IconButton
             pressableProps={{
@@ -83,7 +89,7 @@ export default function Product({
             style={styles.product__price}
             colorName="secondary_outline_text"
           >
-           {price}₴
+            {price}₴
           </ThemedText>
           <IconButton
             pressableProps={{

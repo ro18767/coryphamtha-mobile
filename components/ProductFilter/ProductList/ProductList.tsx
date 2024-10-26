@@ -1,6 +1,8 @@
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet, View } from "react-native";
 import Product from "./Product";
+import { useEffect, useState } from "react";
+import { URL_BASE } from "@/constants/glabals";
 
 export default function ProductList({
   offset,
@@ -11,14 +13,24 @@ export default function ProductList({
   limit: number;
   totalCount: number;
 }) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch(`${URL_BASE}/api/products`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setData(data);
+      });
+  }, []);
   return (
     <ThemedView style={styles.product_list} colorName="surface_background">
-      {Array.from({
-        length: Math.min(totalCount - offset, limit),
-      }).map((v, i) => {
-        let title = "Бантик оксамитовий";
-        let price = 268;
-        return <Product key={i} title={title} price={price} />;
+      {(data?.products ?? []).map((v, i) => {
+        let title = v.title;
+        let price = v.price;
+        let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;
+        return <Product key={i} title={title} price={price} imageUrl={image_link} />;
       })}
     </ThemedView>
   );
