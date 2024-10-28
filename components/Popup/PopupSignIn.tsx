@@ -9,6 +9,7 @@ import TextButton from "../buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
 import PopupSignUp from "./PopupSignUp";
 import React from "react";
+import { URL_BASE } from "@/constants/glabals";
 
 export default function PopupSignIn() {
   const popupContext = usePopupContext();
@@ -27,6 +28,43 @@ export default function PopupSignIn() {
   const [confirmCode, onChangeConfirmCode] = useState("");
   const [isCoonfirmation, setIsConfirmation] = useState(false);
 
+  function login() {
+    const fd = new FormData();
+    fd.append("phone", phone);
+
+    fetch(`${URL_BASE}/api/users/login_by_phone`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
+  function verifyLogin() {
+    const fd = new FormData();
+    fd.append("phone", phone);
+    fd.append("code", confirmCode);
+
+    fetch(
+      `${URL_BASE}/api/users/verify_login`,
+      {
+        method: "post",
+        body: fd,
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.status === "Phone error") return;
+        console.log(data);
+        setPopupVisible(false);
+      });
+  }
   return (
     <>
       <View style={styles.backdrop} />
@@ -68,6 +106,7 @@ export default function PopupSignIn() {
               }}
               pressableProps={{
                 onPress: () => {
+                  login()
                   setIsConfirmation(true);
                 },
               }}
@@ -134,7 +173,9 @@ export default function PopupSignIn() {
                 style: styles.container__form__submit_button_wrap,
               }}
               pressableProps={{
-                onPress: () => {},
+                onPress: () => {
+                  verifyLogin();
+                },
               }}
               conteinerProps={{
                 style: styles.container__form__submit_button,

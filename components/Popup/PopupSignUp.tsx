@@ -2,7 +2,7 @@ import { usePopupContext } from "@/context/PopupContext";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet, TextInput, View } from "react-native";
 import { ThemedText } from "../ThemedText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IconButton from "../buttons/IconButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import TextButton from "../buttons/TextButton";
@@ -10,6 +10,7 @@ import ViewButton from "../buttons/ViewButton";
 import { Sizes } from "@/constants/Sizes";
 import PopupSignIn from "./PopupSignIn";
 import React from "react";
+import { URL_BASE } from "@/constants/glabals";
 
 export default function PopupSignUp() {
   const popupContext = usePopupContext();
@@ -26,7 +27,60 @@ export default function PopupSignUp() {
   const color = useThemeColor({}, "surface_text");
   const [phone, onChangePhone] = useState("+380");
   const [confirmCode, onChangeConfirmCode] = useState("");
+  const [EULA, onEULA] = useState(false);
   const [isCoonfirmation, setIsConfirmation] = useState(false);
+
+  const [serverPhoneVerificationCode, setServerPhoneVerificationCode] =
+    useState<string>();
+
+  useEffect(() => {
+    console.log(serverPhoneVerificationCode);
+  }, [serverPhoneVerificationCode]);
+
+  function register() {
+    const code = Math.floor(Math.random() * 100000).toString();
+    const fd = new FormData();
+    fd.append("phone", phone);
+    fd.append("emailVerificationCode", "");
+
+    fetch(`${URL_BASE}/api/users/register`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+
+    setServerPhoneVerificationCode(code);
+  }
+
+  function verifyPhone() {
+    const fd = new FormData();
+    fd.append("phone", phone);
+    fd.append("code", confirmCode);
+
+    fetch(
+      `${URL_BASE}/api/users/verify_phone_code
+`,
+      {
+        method: "post",
+        body: fd,
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.status === "Invalid verification code") return;
+        popupComponentRef.current = PopupSignIn;
+        setPopupData({});
+        setPopupVisible(true);
+        console.log(data);
+      });
+  }
 
   return (
     <>
@@ -63,7 +117,7 @@ export default function PopupSignUp() {
               />
             </View>
             <View style={styles.container__form__checkbox_list_wrap}>
-              <CheckBox />
+              <CheckBox EULA={EULA} onEULA={onEULA} />
             </View>
             <TextButton
               underlayProps={{
@@ -71,6 +125,8 @@ export default function PopupSignUp() {
               }}
               pressableProps={{
                 onPress: () => {
+                  if (!EULA) return;
+                  register();
                   setIsConfirmation(true);
                 },
               }}
@@ -137,7 +193,9 @@ export default function PopupSignUp() {
                 style: styles.container__form__submit_button_wrap,
               }}
               pressableProps={{
-                onPress: () => {},
+                onPress: () => {
+                  verifyPhone();
+                },
               }}
               conteinerProps={{
                 style: styles.container__form__submit_button,
@@ -195,9 +253,7 @@ export default function PopupSignUp() {
   );
 }
 
-function CheckBox() {
-  const [checked, setChecked] = useState(false);
-
+function CheckBox({ EULA, onEULA }) {
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const checkColor = useThemeColor({}, "secondary_outline_background");
   const backgroundColor = useThemeColor({}, "secondary_outline_text");
@@ -206,7 +262,7 @@ function CheckBox() {
       pressableProps={{
         style: { width: "100%" },
         onPress: () => {
-          setChecked(!checked);
+          onEULA(!EULA);
         },
       }}
       conteinerProps={{
@@ -217,14 +273,14 @@ function CheckBox() {
       <View
         style={[
           { borderColor },
-          checked ? { backgroundColor } : undefined,
+          EULA ? { backgroundColor } : undefined,
           styles.filter__tag_option_checkbox_input_wrap,
         ]}
       >
         <View
           style={[
             { backgroundColor: checkColor },
-            checked ? undefined : { display: "none" },
+            EULA ? undefined : { display: "none" },
             styles.container__form__checkbox_check,
           ]}
         />

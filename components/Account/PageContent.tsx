@@ -1,12 +1,8 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Link, router, useLocalSearchParams } from "expo-router";
+import { StyleSheet, TextInput, View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import ViewButton from "../buttons/ViewButton";
 
 export default function PageContent() {
   const borderColor = useThemeColor({}, "secondary_outline_text");
@@ -18,6 +14,7 @@ export default function PageContent() {
     },
     "none"
   );
+  const [editNode, setEditNode] = useState(false);
   const [fname, onChangeFname] = useState("Анна");
   const [lname, onChangeLname] = useState("Галян");
   const [phone, onChangePhone] = useState("+380");
@@ -262,7 +259,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   container__input: {
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 16,
     lineHeight: 20,
     paddingHorizontal: 12 - 1, // minus borderWidth
@@ -286,7 +283,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 48,
     flexDirection: "row",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   container__form__submit_button_wrap: {
     borderRadius: 4,
@@ -301,7 +298,6 @@ const styles = StyleSheet.create({
   },
   container__form__submit_button_text: {
     textAlign: "center",
-    
     fontWeight: 500,
     fontSize: 16,
     lineHeight: 20,
