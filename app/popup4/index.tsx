@@ -14,7 +14,7 @@ export default function Index() {
         pressableProps={{
           onPress: () => {
             setPopupVisible(false);
-            popupComponentName.current = 'PopupSignIn';
+            popupComponentName.current = "PopupCart";
             setPopupData({});
             setPopupVisible(true);
           },

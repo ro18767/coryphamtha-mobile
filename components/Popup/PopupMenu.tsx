@@ -47,7 +47,7 @@ export default function PopupMenu() {
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
 
-  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
   const borderColor = useThemeColor(
     {

@@ -1,6 +1,6 @@
 import { usePopupContext } from "@/context/PopupContext";
 import { ThemedView } from "@/components/ThemedView";
-import { StyleSheet, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useEffect, useState } from "react";
 import IconButton from "../buttons/IconButton";
@@ -9,8 +9,9 @@ import TextButton from "../buttons/TextButton";
 import ViewButton from "../buttons/ViewButton";
 import { Sizes } from "@/constants/Sizes";
 import React from "react";
+import CartBlock from "../Cart/ProductList/CartBlock";
 
-export default function PopupBuy({ data: { successCallback } = {} }: any) {
+export default function PopupCart({ data: { successCallback } = {} }: any) {
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
@@ -22,64 +23,16 @@ export default function PopupBuy({ data: { successCallback } = {} }: any) {
     },
     "surface_outline_background"
   );
-  const color = useThemeColor({}, "surface_text");
-  const [phone, onChangePhone] = useState("+380");
-
   return (
     <>
       <View style={styles.backdrop} />
       <ThemedView style={styles.container} colorName="surface_background">
-        <ThemedText
-          style={styles.container__header}
-          colorName="secondary_outline_text"
+        <ScrollView
+          style={[{ flexShrink: 1 }]}
+          contentContainerStyle={{ flexShrink: 1 }}
         >
-          ШВИДКА ПОКУПКА
-        </ThemedText>
-        <View>
-          <ThemedText
-            style={styles.container__input_label}
-            colorName="secondary_outline_text"
-          >
-            Ваш телефон
-          </ThemedText>
-          <TextInput
-            style={[
-              {
-                color,
-                borderColor,
-              },
-              styles.container__input,
-            ]}
-            onChangeText={onChangePhone}
-            value={phone}
-            placeholder=""
-            keyboardType="phone-pad"
-            inputMode="tel"
-          />
-        </View>
-        <TextButton
-          underlayProps={{
-            style: styles.container__form__submit_button_wrap,
-          }}
-          pressableProps={{
-            onPress: () => {
-              setPopupVisible(false);
-              if (typeof successCallback === "function") {
-                successCallback();
-              }
-            },
-          }}
-          conteinerProps={{
-            style: styles.container__form__submit_button,
-            colorName: "secondary_background",
-          }}
-          textProps={{
-            style: styles.container__form__submit_button_text,
-            colorName: "secondary_text",
-          }}
-        >
-          Замовити
-        </TextButton>
+          <CartBlock />
+        </ScrollView>
         <IconButton
           pressableProps={{
             style: [styles.container__form__close_button_pressable],
@@ -113,17 +66,16 @@ const styles = StyleSheet.create({
   },
   container: {
     position: "absolute",
-    top: Sizes.HEADER_HEIGHT + 128,
+    top: Sizes.HEADER_HEIGHT + 16,
     right: 24,
     left: 24,
-
+    maxHeight: "50%",
     borderRadius: 8,
     shadowOffset: { width: -8, height: 8 },
     shadowOpacity: 0.14,
     shadowRadius: 28,
     rowGap: 16,
-    paddingHorizontal: 40,
-    paddingVertical: 32,
+    overflow: "hidden",
   },
   container__header: {
     fontWeight: 500,

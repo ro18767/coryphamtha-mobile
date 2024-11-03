@@ -8,7 +8,6 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import TextButton from "../buttons/TextButton";
 import ViewButton from "../buttons/ViewButton";
 import { Sizes } from "@/constants/Sizes";
-import PopupSignIn from "./PopupSignIn";
 import React from "react";
 import { URL_BASE } from "@/constants/glabals";
 
@@ -16,7 +15,7 @@ export default function PopupSignUp() {
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
-  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const borderColor = useThemeColor(
     {
       light: "#D9D9D9",
@@ -75,7 +74,8 @@ export default function PopupSignUp() {
       })
       .then((data) => {
         if (data.status === "Invalid verification code") return;
-        popupComponentRef.current = PopupSignIn;
+        setPopupVisible(false);
+        popupComponentName.current = 'PopupSignIn';
         setPopupData({});
         setPopupVisible(true);
         console.log(data);
@@ -147,7 +147,8 @@ export default function PopupSignUp() {
               }}
               pressableProps={{
                 onPress: () => {
-                  popupComponentRef.current = PopupSignIn;
+                  setPopupVisible(false);
+                  popupComponentName.current = 'PopupSignIn';
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -214,7 +215,8 @@ export default function PopupSignUp() {
               }}
               pressableProps={{
                 onPress: () => {
-                  popupComponentRef.current = PopupSignIn;
+                  setPopupVisible(false);
+                  popupComponentName.current = 'PopupSignIn';
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -253,7 +255,13 @@ export default function PopupSignUp() {
   );
 }
 
-function CheckBox({ EULA, onEULA }) {
+function CheckBox({
+  EULA,
+  onEULA,
+}: {
+  EULA: boolean;
+  onEULA: (val: boolean) => void;
+}) {
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const checkColor = useThemeColor({}, "secondary_outline_background");
   const backgroundColor = useThemeColor({}, "secondary_outline_text");

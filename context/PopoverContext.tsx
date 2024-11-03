@@ -7,11 +7,10 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { popoverMap } from "./popoverMap";
 
 type PopoverContextType = {
-  popoverComponentRef: React.MutableRefObject<React.FunctionComponent<{
-    data: any;
-  }> | null>;
+  popoverComponentName: React.MutableRefObject<keyof typeof popoverMap | null>;
   popoverData: any | null;
   setPopoverData: Dispatch<SetStateAction<any | null>>;
   popoverVisible: boolean;
@@ -24,16 +23,14 @@ export const usePopoverContext = () => useContext(PopoverContext);
 
 const PopoverProvider = ({ children }: { children: any }) => {
   useRef;
-  const popoverComponentRef = useRef<React.FunctionComponent<{
-    data: any;
-  }> | null>(null);
+  const popoverComponentName = useRef<keyof typeof popoverMap | null>(null);
   const [popoverData, setPopoverData] = useState<any | null>(null);
   const [popoverVisible, setPopoverVisible] = useState<boolean>(false);
 
   return (
     <PopoverContext.Provider
       value={{
-        popoverComponentRef,
+        popoverComponentName,
         popoverData,
         setPopoverData,
         popoverVisible,

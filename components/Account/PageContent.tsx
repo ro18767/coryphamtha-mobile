@@ -1,8 +1,9 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, View, Image } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import TextButton from "@/components/buttons/TextButton";
 import { useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import ViewButton from "../buttons/ViewButton";
 
 export default function PageContent() {
   const borderColor = useThemeColor({}, "secondary_outline_text");
@@ -14,7 +15,7 @@ export default function PageContent() {
     },
     "none"
   );
-  const [editNode, setEditNode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [fname, onChangeFname] = useState("Анна");
   const [lname, onChangeLname] = useState("Галян");
   const [phone, onChangePhone] = useState("+380");
@@ -27,6 +28,13 @@ export default function PageContent() {
   return (
     <View style={styles.form_wrap}>
       <View style={styles.form_title_wrap}>
+        <View style={styles.form_title_icon_wrap}>
+          <Image
+            style={[styles.form_title_icon]}
+            resizeMode="contain"
+            source={require("@/assets/images/icons/cabinet-icon-yellow.png")}
+          ></Image>
+        </View>
         <ThemedText
           style={styles.form_title}
           colorName="secondary_outline_text"
@@ -55,6 +63,7 @@ export default function PageContent() {
           placeholder=""
           keyboardType="default"
           inputMode="text"
+          readOnly={!editMode}
         />
       </View>
 
@@ -79,6 +88,7 @@ export default function PageContent() {
           placeholder=""
           keyboardType="default"
           inputMode="text"
+          readOnly={!editMode}
         />
       </View>
 
@@ -103,6 +113,7 @@ export default function PageContent() {
           placeholder=""
           keyboardType="phone-pad"
           inputMode="tel"
+          readOnly
         />
       </View>
 
@@ -127,6 +138,7 @@ export default function PageContent() {
           placeholder=""
           keyboardType="default"
           inputMode="text"
+          readOnly={!editMode}
         />
       </View>
 
@@ -151,6 +163,7 @@ export default function PageContent() {
           placeholder=""
           keyboardType="default"
           inputMode="text"
+          readOnly={!editMode}
         />
       </View>
 
@@ -175,77 +188,115 @@ export default function PageContent() {
           placeholder=""
           keyboardType="default"
           inputMode="text"
+          readOnly={!editMode}
         />
       </View>
 
-      <View style={styles.form_section}>
-        <ThemedText
-          style={styles.container__input_label}
-          colorName="surface_text"
-        >
-          Дата народження
-        </ThemedText>
-        <TextInput
-          style={[
-            {
-              color,
-              borderColor,
-              backgroundColor,
-            },
-            styles.container__input,
-          ]}
-          onChangeText={onChangeBday}
-          value={bday}
-          placeholder=""
-          keyboardType="default"
-          inputMode="text"
-        />
-      </View>
-
-      <View style={styles.form_section}>
-        <ThemedText
-          style={styles.container__input_label}
-          colorName="surface_text"
-        >
-          Стать
-        </ThemedText>
-        <TextInput
-          style={[
-            {
-              color,
-              borderColor,
-              backgroundColor,
-            },
-            styles.container__input,
-          ]}
-          onChangeText={onChangeGender}
-          value={gender}
-          placeholder=""
-          keyboardType="default"
-          inputMode="text"
-        />
-      </View>
-
-      <View style={styles.container__form__submit_button_wrap_wrap}>
-        <TextButton
-          underlayProps={{
-            style: styles.container__form__submit_button_wrap,
-          }}
-          pressableProps={{
-            onPress: () => {},
-          }}
-          conteinerProps={{
-            style: styles.container__form__submit_button,
-            colorName: "secondary_background",
-          }}
-          textProps={{
-            style: styles.container__form__submit_button_text,
-            colorName: "secondary_text",
-          }}
-        >
-          Зберегти
-        </TextButton>
-      </View>
+      {editMode ? (
+        <View style={styles.form_section}>
+          <ThemedText
+            style={styles.container__input_label}
+            colorName="surface_text"
+          >
+            Дата народження
+          </ThemedText>
+          <TextInput
+            style={[
+              {
+                color,
+                borderColor,
+                backgroundColor,
+              },
+              styles.container__input,
+            ]}
+            onChangeText={onChangeBday}
+            value={bday}
+            placeholder=""
+            keyboardType="default"
+            inputMode="text"
+            readOnly={!editMode}
+          />
+        </View>
+      ) : null}
+      {editMode ? (
+        <View style={styles.form_section}>
+          <ThemedText
+            style={styles.container__input_label}
+            colorName="surface_text"
+          >
+            Стать
+          </ThemedText>
+          <TextInput
+            style={[
+              {
+                color,
+                borderColor,
+                backgroundColor,
+              },
+              styles.container__input,
+            ]}
+            onChangeText={onChangeGender}
+            value={gender}
+            placeholder=""
+            keyboardType="default"
+            inputMode="text"
+            readOnly={!editMode}
+          />
+        </View>
+      ) : null}
+      {editMode ? (
+        <View style={styles.container__form__submit_button_wrap_wrap}>
+          <TextButton
+            underlayProps={{
+              style: styles.container__form__submit_button_wrap,
+            }}
+            pressableProps={{
+              onPress: () => {
+                updateUser();
+                setEditMode(false);
+              },
+            }}
+            conteinerProps={{
+              style: styles.container__form__submit_button,
+              colorName: "secondary_background",
+            }}
+            textProps={{
+              style: styles.container__form__submit_button_text,
+              colorName: "secondary_text",
+            }}
+          >
+            Зберегти
+          </TextButton>
+        </View>
+      ) : null}
+      {!editMode ? (
+        <View style={styles.edit_button_wrap}>
+          <ViewButton
+            pressableProps={{
+              style: styles.edit_button_pressable_wrap,
+              onPress: () => {
+                setEditMode(true);
+              },
+            }}
+            conteinerProps={{
+              colorName: "surface_background",
+              style: styles.edit_button_conteiner_wrap,
+            }}
+          >
+            <View style={[styles.edit_button_text_icon_wrap]}>
+              <Image
+                source={require("@/assets/images/icons/edit-mode-icon.png")}
+              />
+            </View>
+            <ThemedText
+              colorName="primary_outline_text"
+              style={[styles.edit_button_text]}
+            >
+              Редагувати
+            </ThemedText>
+          </ViewButton>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -259,7 +310,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   container__input: {
-    fontWeight: '500',
+    fontWeight: "500",
     fontSize: 16,
     lineHeight: 20,
     paddingHorizontal: 12 - 1, // minus borderWidth
@@ -268,7 +319,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   form_section: {},
-  form_title_wrap: {},
+  form_title_wrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    gap: 16,
+  },
   form_title: {
     fontSize: 24,
     lineHeight: 28,
@@ -277,6 +333,7 @@ const styles = StyleSheet.create({
   form_wrap: {
     gap: 8,
     paddingHorizontal: 24,
+    paddingBottom: 48,
   },
 
   container__form__submit_button_wrap_wrap: {
@@ -308,5 +365,22 @@ const styles = StyleSheet.create({
     right: 12,
     height: 24,
     width: 24,
+  },
+  form_title_icon_wrap: {},
+  form_title_icon: {
+    width: 28,
+    height: 28,
+  },
+  edit_button_pressable_wrap: {},
+  edit_button_conteiner_wrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  edit_button_text: {},
+  edit_button_text_icon_wrap: {},
+  edit_button_wrap: {
+    paddingTop: 20,
+    flexDirection: "row-reverse",
   },
 });

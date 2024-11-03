@@ -13,7 +13,9 @@ import Footer from "@/components/template/Footer";
 import { ThemedView } from "@/components/ThemedView";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import PopupProvider, { usePopupContext } from "@/context/PopupContext";
+import { popupMap } from "@/context/popupMap";
 import PopoverProvider, { usePopoverContext } from "@/context/PopoverContext";
+import { popoverMap } from "@/context/popoverMap";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -56,15 +58,15 @@ function Children({ children }: any) {
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
 
-  const { popupVisible, popupData, popupComponentRef } = popupContext;
+  const { popupVisible, popupData, popupComponentName } = popupContext;
 
-  const { popoverVisible, popoverData, popoverComponentRef } = popoverContext;
+  const { popoverVisible, popoverData, popoverComponentName } = popoverContext;
 
   useEffect(() => {
     console.log(popupVisible);
     console.log(popupData);
-    console.log(popupComponentRef);
-  }, [popupVisible, popupData, popupComponentRef]);
+    console.log(popupComponentName);
+  }, [popupVisible, popupData, popupComponentName]);
   return (
     <>
       <Header />
@@ -80,12 +82,30 @@ function Children({ children }: any) {
           <Footer />
         </ScrollView>
       </ThemedView>
-      {popupVisible && popupComponentRef.current && popupData ? (
-        <popupComponentRef.current data={popupData} />
-      ) : null}
-      {popoverVisible && popoverComponentRef.current && popoverData ? (
-        <popoverComponentRef.current data={popoverData} />
-      ) : null}
+      {popupVisible &&
+      popupComponentName.current != null &&
+      popupComponentName.current in popupMap &&
+      popupData
+        ? ((
+            Component: React.FunctionComponent<{
+              data: any;
+            }>
+          ) => <Component data={popupData} />)(
+            popupMap[popupComponentName.current]
+          )
+        : null}
+      {popoverVisible &&
+      popoverComponentName.current != null &&
+      popoverComponentName.current in popoverMap &&
+      popoverData
+        ? ((
+            Component: React.FunctionComponent<{
+              data: any;
+            }>
+          ) => <Component data={popoverData} />)(
+            popoverMap[popoverComponentName.current]
+          )
+        : null}
     </>
   );
 }

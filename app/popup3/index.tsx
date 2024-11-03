@@ -1,5 +1,4 @@
 import TextButton from "@/components/buttons/TextButton";
-import PopupBuy from "@/components/Popup/PopupBuy";
 import { usePopupContext } from "@/context/PopupContext";
 import { StyleSheet, View } from "react-native";
 
@@ -7,14 +6,15 @@ export default function Index() {
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
-  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
 
   return (
     <View style={styles.container}>
       <TextButton
         pressableProps={{
           onPress: () => {
-            popupComponentRef.current = PopupBuy;
+            setPopupVisible(false);
+            popupComponentName.current = 'PopupBuy';
             setPopupData({});
             setPopupVisible(true);
           },

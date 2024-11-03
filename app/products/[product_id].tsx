@@ -1,13 +1,14 @@
 import EmailSubscribe from "@/components/EmailSubscribe/EmailSubscribe";
 import { Image, StyleSheet, View } from "react-native";
-import { useLocalSearchParams, useGlobalSearchParams } from "expo-router";
-import React from "react";
+import { useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import TextButton from "@/components/buttons/TextButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import PopupBuy from "@/components/Popup/PopupBuy";
 import { usePopupContext } from "@/context/PopupContext";
+import { usePopoverContext } from "@/context/PopoverContext";
+import IconButton from "@/components/buttons/IconButton";
 
 export default function ProductPage() {
   return (
@@ -22,10 +23,19 @@ export function ProductDisplay() {
   const { product_id } = useLocalSearchParams<{
     product_id: string;
   }>();
+  const popoverContext = usePopoverContext();
+  if (!popoverContext) return;
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
-  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
+    popoverContext;
+  // popoverComponentName.current = "PopupCategory";
+  // setPopoverData({});
+  // setPopoverVisible(true);
+
+  const [showThankYouPopover, setShowThankYouPopover] = useState(false);
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const backgroundColor = useThemeColor({}, "secondary_outline_text");
@@ -75,180 +85,218 @@ export function ProductDisplay() {
             {price}₴
           </ThemedText>
         </View>
-        <View>
-          <TextButton
-            underlayProps={{
-              style: styles.container__form__submit_button_wrap,
-            }}
-            pressableProps={{
-              onPress: () => {},
-            }}
-            conteinerProps={{
-              style: styles.container__form__submit_button,
-              colorName: "primary_background",
-            }}
-            textProps={{
-              style: styles.container__form__submit_button_text,
-              colorName: "primary_text",
-            }}
-          >
-            КУПИТИ
-          </TextButton>
-          <TextButton
-            underlayProps={{
-              style: styles.container__form__submit_button_wrap,
-            }}
-            pressableProps={{
-              onPress: () => {console.log('test');
-              
-                popupComponentRef.current = PopupBuy;
-                setPopupData({});
-                setPopupVisible(true);
-              },
-            }}
-            conteinerProps={{
-              style: [
-                styles.container__form__submit_button,
-                {
-                  borderColor,
-                  borderWidth: 1,
-                },
-              ],
-              colorName: "secondary_outline_background",
-            }}
-            textProps={{
-              style: styles.container__form__submit_button_text,
-              colorName: "secondary_outline_text",
-            }}
-          >
-            ШВИДКА ПОКУПКА
-          </TextButton>
-        </View>
-        <View style={styles.product__bottom_info}>
-          <View style={styles.product__bottom_info_col}>
-            <ThemedText
-              style={styles.product__bottom_info_col_title}
-              colorName="secondary_outline_text"
+        <View style={styles.product_bottom_wrap}>
+          <View style={styles.product__bottom_buttons_wrap}>
+            <TextButton
+              underlayProps={{
+                style: styles.product__bottom_buttons_button_wrap,
+              }}
+              pressableProps={{
+                onPress: () => {},
+              }}
+              conteinerProps={{
+                style: [
+                  styles.product__bottom_buttons_button,
+                  {
+                    borderColor,
+                    borderWidth: 1,
+                  },
+                ],
+                colorName: "secondary_outline_background",
+              }}
+              textProps={{
+                style: styles.product__bottom_buttons_button_text,
+                colorName: "primary_outline_text",
+              }}
             >
-              Характеристики
-            </ThemedText>
-            <View style={styles.product__bottom_info_col_content}>
-              {tag_array.map(([tag_title, tag_value], i) => {
-                return (
-                  <View
-                    key={i}
-                    style={styles.product__bottom_info_col_content_block}
-                  >
-                    <ThemedText
-                      style={styles.product__bottom_info_col_content_text}
-                      colorName="secondary_outline_text"
-                    >
-                      {tag_title}
-                    </ThemedText>
-                    <ThemedText
-                      style={styles.product__bottom_info_col_content_text}
-                      colorName="surface_text"
-                    >
-                      {tag_value}
-                    </ThemedText>
-                  </View>
-                );
-              })}
-            </View>
+              Гарантія
+            </TextButton>
+            <TextButton
+              underlayProps={{
+                style: styles.product__bottom_buttons_button_wrap,
+              }}
+              pressableProps={{
+                onPress: () => {},
+              }}
+              conteinerProps={{
+                style: [
+                  styles.product__bottom_buttons_button,
+                  {
+                    borderColor,
+                    borderWidth: 1,
+                  },
+                ],
+                colorName: "secondary_outline_background",
+              }}
+              textProps={{
+                style: styles.product__bottom_buttons_button_text,
+                colorName: "primary_outline_text",
+              }}
+            >
+              Варіанти оплати
+            </TextButton>
+            <TextButton
+              underlayProps={{
+                style: styles.product__bottom_buttons_button_wrap,
+              }}
+              pressableProps={{
+                onPress: () => {},
+              }}
+              conteinerProps={{
+                style: [
+                  styles.product__bottom_buttons_button,
+                  {
+                    borderColor,
+                    borderWidth: 1,
+                  },
+                ],
+                colorName: "secondary_outline_background",
+              }}
+              textProps={{
+                style: styles.product__bottom_buttons_button_text,
+                colorName: "primary_outline_text",
+              }}
+            >
+              Доставка по Україні
+            </TextButton>
           </View>
-          <View
-            style={[styles.product__bottom_info_divider, { backgroundColor }]}
-          ></View>
-          <View style={styles.product__bottom_info_col}>
-            <ThemedText
-              style={styles.product__bottom_info_col_title}
-              colorName="secondary_outline_text"
-            >
-              Опис
-            </ThemedText>
-            <View style={styles.product__bottom_info_col_content}>
+          <View style={styles.product__bottom_info}>
+            <View style={styles.product__bottom_info_col}>
               <ThemedText
-                style={styles.product__bottom_info_col_content_text}
-                colorName="surface_text"
+                style={styles.product__bottom_info_col_title}
+                colorName="secondary_outline_text"
               >
-                {description}
+                Характеристики
               </ThemedText>
+              <View style={styles.product__bottom_info_col_content}>
+                {tag_array.map(([tag_title, tag_value], i) => {
+                  return (
+                    <View
+                      key={i}
+                      style={styles.product__bottom_info_col_content_block}
+                    >
+                      <ThemedText
+                        style={styles.product__bottom_info_col_content_text}
+                        colorName="secondary_outline_text"
+                      >
+                        {tag_title}
+                      </ThemedText>
+                      <ThemedText
+                        style={styles.product__bottom_info_col_content_text}
+                        colorName="surface_text"
+                      >
+                        {tag_value}
+                      </ThemedText>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+            <View
+              style={[styles.product__bottom_info_divider, { backgroundColor }]}
+            ></View>
+            <View style={styles.product__bottom_info_col}>
+              <ThemedText
+                style={styles.product__bottom_info_col_title}
+                colorName="secondary_outline_text"
+              >
+                Опис
+              </ThemedText>
+              <View style={styles.product__bottom_info_col_content}>
+                <ThemedText
+                  style={styles.product__bottom_info_col_content_text}
+                  colorName="surface_text"
+                >
+                  {description}
+                </ThemedText>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.product__bottom_buttons_wrap}>
-          <TextButton
-            underlayProps={{
-              style: styles.product__bottom_buttons_button_wrap,
-            }}
-            pressableProps={{
-              onPress: () => {},
-            }}
-            conteinerProps={{
-              style: [
-                styles.product__bottom_buttons_button,
-                {
-                  borderColor,
-                  borderWidth: 1,
+          <View style={styles.container__form__submit_button_block_wrap}>
+            <TextButton
+              underlayProps={{
+                style: styles.container__form__submit_button_wrap,
+              }}
+              pressableProps={{
+                onPress: () => {},
+              }}
+              conteinerProps={{
+                style: styles.container__form__submit_button,
+                colorName: "primary_background",
+              }}
+              textProps={{
+                style: styles.container__form__submit_button_text,
+                colorName: "primary_text",
+              }}
+            >
+              КУПИТИ
+            </TextButton>
+            <TextButton
+              underlayProps={{
+                style: styles.container__form__submit_button_wrap,
+              }}
+              pressableProps={{
+                onPress: () => {
+                  setPopupVisible(false);
+                  popupComponentName.current = "PopupBuy";
+                  setPopupData({
+                    successCallback: () => {
+                      console.log("successCallback");
+
+                      setShowThankYouPopover(true);
+                    },
+                  });
+                  setPopupVisible(true);
                 },
-              ],
-              colorName: "secondary_outline_background",
-            }}
-            textProps={{
-              style: styles.product__bottom_buttons_button_text,
-              colorName: "primary_outline_text",
-            }}
-          >
-            Гарантія
-          </TextButton>
-          <TextButton
-            underlayProps={{
-              style: styles.product__bottom_buttons_button_wrap,
-            }}
-            pressableProps={{
-              onPress: () => {},
-            }}
-            conteinerProps={{
-              style: [
-                styles.product__bottom_buttons_button,
-                {
-                  borderColor,
-                  borderWidth: 1,
-                },
-              ],
-              colorName: "secondary_outline_background",
-            }}
-            textProps={{
-              style: styles.product__bottom_buttons_button_text,
-              colorName: "primary_outline_text",
-            }}
-          >
-            Варіанти оплати
-          </TextButton>
-          <TextButton
-            underlayProps={{
-              style: styles.product__bottom_buttons_button_wrap,
-            }}
-            pressableProps={{
-              onPress: () => {},
-            }}
-            conteinerProps={{
-              style: [
-                styles.product__bottom_buttons_button,
-                {
-                  borderColor,
-                  borderWidth: 1,
-                },
-              ],
-              colorName: "secondary_outline_background",
-            }}
-            textProps={{
-              style: styles.product__bottom_buttons_button_text,
-              colorName: "primary_outline_text",
-            }}
-          >
-            Доставка по Україні
-          </TextButton>
+              }}
+              conteinerProps={{
+                style: [
+                  styles.container__form__submit_button,
+                  {
+                    borderColor,
+                    borderWidth: 1,
+                  },
+                ],
+                colorName: "secondary_outline_background",
+              }}
+              textProps={{
+                style: styles.container__form__submit_button_text,
+                colorName: "secondary_outline_text",
+              }}
+            >
+              ШВИДКА ПОКУПКА
+            </TextButton>
+            {showThankYouPopover ? (
+              <ThemedView
+                style={styles.filter__popup_container}
+                colorName="secondary_outline_background"
+              >
+                <ThemedText
+                  style={[styles.filter__popup__text]}
+                  colorName="surface_text"
+                >
+                  Дякуємо за замовлення! Менеджер скоро зв'яжеться з вами.
+                </ThemedText>
+                <IconButton
+                  pressableProps={{
+                    style: [styles.filter__popup_close_button_icon],
+                    onPress: () => {
+                      setShowThankYouPopover(false);
+                    },
+                  }}
+                  conteinerProps={{
+                    style: styles.filter__popup_close_button__container,
+                    colorName: "surface_background",
+                  }}
+                  imageProps={{
+                    resizeMode: "contain",
+                    style: styles.filter__popup_close_button__image,
+                    source: require("@/assets/images/icons/close-filter-icon.png"),
+                  }}
+                />
+              </ThemedView>
+            ) : null}
+          </View>
         </View>
       </ThemedView>
     </>
@@ -354,5 +402,48 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 24,
     fontWeight: 700,
+  },
+  container__form__submit_button_block_wrap: {
+    width: "80%",
+    alignSelf: "center",
+    gap: 16,
+    padding: 20,
+  },
+  product_bottom_wrap: {
+    gap: 16,
+    paddingBottom: 4,
+    flexDirection: "column-reverse",
+  },
+  filter__popup_close_button_icon: {
+    width: 24,
+    height: 24,
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
+  filter__popup_close_button__container: {
+    height: "100%",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 4,
+  },
+  filter__popup_close_button__image: {
+    height: 24,
+    objectFit: "contain",
+  },
+  filter__popup__text: {},
+  filter__popup_container: {
+    width: "100%",
+    position: "absolute",
+    top: "100%",
+    padding: 24,
+    left: 0,
+    right: 0,
+    shadowOffset: { width: -8, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 28,
   },
 });

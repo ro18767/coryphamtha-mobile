@@ -7,7 +7,6 @@ import IconButton from "../buttons/IconButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import TextButton from "../buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
-import PopupSignUp from "./PopupSignUp";
 import React from "react";
 import { URL_BASE } from "@/constants/glabals";
 
@@ -15,7 +14,7 @@ export default function PopupSignIn() {
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
-  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const borderColor = useThemeColor(
     {
       light: "#D9D9D9",
@@ -127,7 +126,8 @@ export default function PopupSignIn() {
               }}
               pressableProps={{
                 onPress: () => {
-                  popupComponentRef.current = PopupSignUp;
+                  setPopupVisible(false);
+                  popupComponentName.current = 'PopupSignUp';
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -194,7 +194,8 @@ export default function PopupSignIn() {
               }}
               pressableProps={{
                 onPress: () => {
-                  popupComponentRef.current = PopupSignUp;
+                  setPopupVisible(false);
+                  popupComponentName.current = 'PopupSignUp';
                   setPopupData({});
                   setPopupVisible(true);
                 },

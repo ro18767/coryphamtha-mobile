@@ -41,6 +41,12 @@ export default function Index() {
       <Link href={"/account"} style={styles.link}>
         <Text>account</Text>
       </Link>
+      <Link href={"/cart"} style={styles.link}>
+        <Text>cart</Text>
+      </Link>
+      <Link href={"/popup4"} style={styles.link}>
+        <Text>popup4</Text>
+      </Link>
     </View>
   );
 }

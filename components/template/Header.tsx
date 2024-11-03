@@ -5,8 +5,6 @@ import { ThemedView } from "@/components/ThemedView";
 import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
-import PopupMenu from "../Popup/PopupMenu";
-import PopupCategory from "../Popup/PopupCategory";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { usePopupContext } from "@/context/PopupContext";
 
@@ -16,16 +14,16 @@ export default function Header() {
   const popupContext = usePopupContext();
   if (!popupContext) return;
 
-  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
-  const { popupComponentRef, setPopupData, setPopupVisible } = popupContext;
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   return (
     <ThemedView style={styles.header} colorName="primary_background">
       <IconButton
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
           onPress: () => {
-            popoverComponentRef.current = PopupCategory;
+            popoverComponentName.current = "PopupCategory";
             setPopoverData({});
             setPopoverVisible(true);
           },
@@ -87,7 +85,7 @@ export default function Header() {
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
           onPress: () => {
-            popoverComponentRef.current = PopupMenu;
+            popoverComponentName.current = "PopupMenu";
             setPopoverData({});
             setPopoverVisible(true);
           },

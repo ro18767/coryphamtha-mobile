@@ -187,7 +187,7 @@ export default function PopupCategory() {
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
 
-  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+  const { setPopoverData, setPopoverVisible } =
     popoverContext;
   const [openCatArr, setOpenCatArr] = useState(
     [] satisfies number[] as number[]
@@ -238,7 +238,7 @@ function PopupCategoryItem({
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
 
-  const { popoverComponentRef, setPopoverData, setPopoverVisible } =
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
   const { link, title, source, children } = item;
   const opened = useMemo(() => openCatArr[level] === item, [openCatArr]);

@@ -1,12 +1,6 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Link, router, useLocalSearchParams } from "expo-router";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import IconButton from "@/components/buttons/IconButton";
-import TextButton from "@/components/buttons/TextButton";
-import { useEffect, useState } from "react";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import ViewButton from "../buttons/ViewButton";
+import { StyleSheet } from "react-native";
 
 const data = {
   category: {
@@ -18,7 +12,7 @@ export default function PageTitle() {
   return (
     <ThemedView style={styles.filter} colorName="surface_background">
       <ThemedText colorName="primary_outline_text" style={styles.filter__title}>
-      Особистий кабінет
+        Особистий кабінет
       </ThemedText>
     </ThemedView>
   );

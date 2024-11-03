@@ -7,11 +7,10 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { popupMap } from "./popupMap";
 
 type PopupContextType = {
-  popupComponentRef: React.MutableRefObject<React.FunctionComponent<{
-    data: any;
-  }> | null>;
+  popupComponentName: React.MutableRefObject<keyof typeof popupMap | null>;
   popupData: any | null;
   setPopupData: Dispatch<SetStateAction<any | null>>;
   popupVisible: boolean;
@@ -23,17 +22,14 @@ const PopupContext = createContext<PopupContextType | null>(null);
 export const usePopupContext = () => useContext(PopupContext);
 
 const PopupProvider = ({ children }: { children: any }) => {
-  useRef;
-  const popupComponentRef = useRef<React.FunctionComponent<{
-    data: any;
-  }> | null>(null);
+  const popupComponentName = useRef<keyof typeof popupMap | null>(null);
   const [popupData, setPopupData] = useState<any | null>(null);
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
 
   return (
     <PopupContext.Provider
       value={{
-        popupComponentRef,
+        popupComponentName,
         popupData,
         setPopupData,
         popupVisible,
