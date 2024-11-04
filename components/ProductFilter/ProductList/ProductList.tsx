@@ -30,8 +30,15 @@ export default function ProductList({
         let title = v.title;
         let price = v.price;
         let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;
+        let id = v.id;
         return (
-          <Product key={i} title={title} price={price} imageUrl={image_link} />
+          <Product
+            key={i}
+            id={id}
+            title={title}
+            price={price}
+            imageUrl={image_link}
+          />
         );
       })}
     </ThemedView>

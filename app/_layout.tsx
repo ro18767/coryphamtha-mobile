@@ -13,6 +13,7 @@ import Footer from "@/components/template/Footer";
 import { ThemedView } from "@/components/ThemedView";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import PopupProvider, { usePopupContext } from "@/context/PopupContext";
+import AppProvider, { useAppContext } from "@/context/AppProvider";
 import { popupMap } from "@/context/popupMap";
 import PopoverProvider, { usePopoverContext } from "@/context/PopoverContext";
 import { popoverMap } from "@/context/popoverMap";
@@ -42,11 +43,13 @@ export default function RootLayout({ children }: any) {
     <>
       <StatusBarSetup />
       <SafeAreaView style={{ flex: 1 }}>
-        <PopupProvider>
-          <PopoverProvider>
-            <Children />
-          </PopoverProvider>
-        </PopupProvider>
+        <AppProvider>
+          <PopupProvider>
+            <PopoverProvider>
+              <Children />
+            </PopoverProvider>
+          </PopupProvider>
+        </AppProvider>
       </SafeAreaView>
     </>
   );

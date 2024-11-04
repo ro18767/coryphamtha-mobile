@@ -1,24 +1,46 @@
 import { ThemedText } from "@/components/ThemedText";
 import IconButton from "@/components/buttons/IconButton";
 import ViewButton from "@/components/buttons/ViewButton";
+import { URL_BASE } from "@/constants/glabals";
+import { updateCartItems, useAppContext } from "@/context/AppProvider";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 export default function Product({
+  id,
   title,
   price,
   imageUrl,
 }: {
+  id: number;
   title: string;
   price: number;
   imageUrl?: string | URL | null;
 }) {
+  const { user, setCartItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
-  console.log(imageUrl);
-  
+  function addCartItem(product_id: number) {
+    const fd = new FormData();
+    fd.append("user_id", String(user.id));
+    fd.append("product_id", String(product_id));
+    fd.append("quantity", "1");
+
+    fetch(`${URL_BASE}/api/cartItems/create`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        updateCartItems(setCartItems);
+      });
+  }
+
   return (
     <View style={styles.product_wrap_space}>
       <ViewButton
@@ -94,7 +116,9 @@ export default function Product({
           <IconButton
             pressableProps={{
               style: [styles.product__button, styles.product__button_icon],
-              onPress: () => {},
+              onPress: () => {
+                addCartItem(id);
+              },
             }}
             underlayProps={{
               style: {

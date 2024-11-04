@@ -1,24 +1,38 @@
 import { ThemedText } from "@/components/ThemedText";
 import IconButton from "@/components/buttons/IconButton";
 import ViewButton from "@/components/buttons/ViewButton";
+import { URL_BASE } from "@/constants/glabals";
+import { updateCartItems, useAppContext } from "@/context/AppProvider";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 export default function Product({
+  item_id,
   title,
   price,
   vendor_code,
   imageUrl,
 }: {
+  item_id: number;
   title: string;
   price: number;
   vendor_code: number | string;
   imageUrl?: string | URL | null;
 }) {
+  const { setCartItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
 
-  console.log(imageUrl);
+  function deleteCartItem(cart_item_id: number) {
+    fetch(`${URL_BASE}/api/cartItems/delete/${cart_item_id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        updateCartItems(setCartItems);
+      });
+  }
 
   return (
     <View style={styles.product_wrap_space}>
@@ -79,7 +93,9 @@ export default function Product({
                 styles.product__button_icon,
                 styles.product__wishlist_add,
               ],
-              onPress: () => {},
+              onPress: () => {
+                deleteCartItem(item_id);
+              },
             }}
             underlayProps={{
               style: {

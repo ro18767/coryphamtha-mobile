@@ -20,6 +20,7 @@ import PopupSignIn from "./PopupSignIn";
 import React from "react";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { Link, router } from "expo-router";
+import { useAppContext } from "@/context/AppProvider";
 type ProductCategory = {
   title: string;
   link: string;
@@ -187,8 +188,27 @@ export default function PopupCategory() {
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
 
-  const { setPopoverData, setPopoverVisible } =
-    popoverContext;
+  const { categories } = useAppContext();
+
+  const level0 = categories.filter((c) => c.level === 0);
+  const level1 = categories.filter((c) => c.level === 1);
+  const level2 = categories.filter((c) => c.level === 2);
+
+  const item_list_data = level0.map((pc) => {
+    const children = level1
+      .filter((cc) => pc.id === cc.main)
+      .map((pc) => {
+        const children = level2.filter((cc) => pc.id === cc.main);
+
+        return { ...pc, children: children.length ? children : undefined };
+      });
+
+    return { ...pc, children: children.length ? children : undefined };
+  });
+  console.log({ item_list_data });
+
+  const { setPopoverData, setPopoverVisible } = popoverContext;
+
   const [openCatArr, setOpenCatArr] = useState(
     [] satisfies number[] as number[]
   );

@@ -4,8 +4,20 @@ import TextButton from "@/components/buttons/TextButton";
 import { useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
+import { URL_BASE } from "@/constants/glabals";
+import { useAppContext } from "@/context/AppProvider";
 
 export default function PageContent() {
+  const { user, setUser } = useAppContext();
+  if (user == null) return;
+  if (!("id" in user)) return;
+  if (!("firstName" in user)) return;
+  if (!("lastName" in user)) return;
+  if (!("phone" in user)) return;
+  if (!("sex" in user)) return;
+  if (!("birthday" in user)) return;
+  if (!("email" in user)) return;
+
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const color = useThemeColor({}, "secondary_outline_text");
   const backgroundColor = useThemeColor(
@@ -16,14 +28,61 @@ export default function PageContent() {
     "none"
   );
   const [editMode, setEditMode] = useState(false);
-  const [fname, onChangeFname] = useState("Анна");
-  const [lname, onChangeLname] = useState("Галян");
-  const [phone, onChangePhone] = useState("+380");
-  const [city, onChangeCity] = useState("Одеса");
-  const [street, onChangeStreet] = useState("Балківська");
-  const [home, onChangeHome] = useState("150А");
-  const [bday, onChangeBday] = useState("");
-  const [gender, onChangeGender] = useState("");
+  const [fname, onChangeFname] = useState<string>(String(user.firstName ?? ""));
+  const [lname, onChangeLname] = useState<string>(String(user.lastName ?? ""));
+  const [phone, onChangePhone] = useState<string>(String(user.phone ?? ""));
+  const [city, onChangeCity] = useState<string>("");
+  const [street, onChangeStreet] = useState<string>("");
+  const [home, onChangeHome] = useState<string>("");
+  const [bday, onChangeBday] = useState<string>(String(user.birthday ?? ""));
+  const [gender, onChangeGender] = useState<string>(String(user.sex ?? ""));
+
+  function updateUser() {
+    if (user == null) return;
+    if (!("id" in user)) return;
+    if (user.id == null) return;
+
+    //   data = array(
+    //     'email' => $this->input->post('email'),
+    //     'emailVerificationCode' => $this->input->post('emailVerificationCode'),
+    //     'phoneVerificationCode' => $this->input->post('phoneVerificationCode'),
+    //     'loginVerificationCode' => $this->input->post('loginVerificationCode'),
+    //     'address_id' => $this->input->post('address_id'),
+    //     'sex' => $this->input->post('sex'),
+    //     'firstName' => $this->input->post('firstName'),
+    //     'lastName' => $this->input->post('lastName'),
+    //     'birthday' => $this->input->post('birthday')
+    // );
+
+    const fd = new FormData();
+    fd.append("firstName", fname);
+    fd.append("lastName", lname);
+    fd.append("birthday", bday);
+    fd.append("sex", gender);
+
+    fetch(`${URL_BASE}/api/users/update/${user.id}`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        fetch(`${URL_BASE}/api/users/view/${user.id}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            console.log(data);
+            setUser(data.user);
+          });
+        console.log(data);
+      });
+
+    // fd.append("city", city);
+    // fd.append("street", street);
+    // fd.append("home", home);
+  }
 
   return (
     <View style={styles.form_wrap}>

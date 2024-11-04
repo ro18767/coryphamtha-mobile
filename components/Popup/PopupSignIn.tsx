@@ -9,6 +9,7 @@ import TextButton from "../buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
 import React from "react";
 import { URL_BASE } from "@/constants/glabals";
+import { useAppContext } from "@/context/AppProvider";
 
 export default function PopupSignIn() {
   const popupContext = usePopupContext();
@@ -26,6 +27,7 @@ export default function PopupSignIn() {
   const [phone, onChangePhone] = useState("+380");
   const [confirmCode, onChangeConfirmCode] = useState("");
   const [isCoonfirmation, setIsConfirmation] = useState(false);
+  const { user, setUser } = useAppContext();
 
   function login() {
     const fd = new FormData();
@@ -48,19 +50,20 @@ export default function PopupSignIn() {
     fd.append("phone", phone);
     fd.append("code", confirmCode);
 
-    fetch(
-      `${URL_BASE}/api/users/verify_login`,
-      {
-        method: "post",
-        body: fd,
-      }
-    )
+    fetch(`${URL_BASE}/api/users/verify_login`, {
+      method: "post",
+      body: fd,
+    })
       .then((res) => {
         return res.json();
       })
       .then((data) => {
         if (data.status === "Phone error") return;
-        console.log(data);
+        setUser(data.user);
+        if(!data.user.address_id) {
+          
+        }
+
         setPopupVisible(false);
       });
   }
@@ -105,7 +108,7 @@ export default function PopupSignIn() {
               }}
               pressableProps={{
                 onPress: () => {
-                  login()
+                  login();
                   setIsConfirmation(true);
                 },
               }}
@@ -127,7 +130,7 @@ export default function PopupSignIn() {
               pressableProps={{
                 onPress: () => {
                   setPopupVisible(false);
-                  popupComponentName.current = 'PopupSignUp';
+                  popupComponentName.current = "PopupSignUp";
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -195,7 +198,7 @@ export default function PopupSignIn() {
               pressableProps={{
                 onPress: () => {
                   setPopupVisible(false);
-                  popupComponentName.current = 'PopupSignUp';
+                  popupComponentName.current = "PopupSignUp";
                   setPopupData({});
                   setPopupVisible(true);
                 },
