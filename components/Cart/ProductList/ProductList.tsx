@@ -6,10 +6,13 @@ import Product from "./Product";
 import { useAppContext } from "@/context/AppProvider";
 
 export default function ProductList() {
-  const { cartItems, setCartItems, products } = useAppContext();
+  const { user, cartItems, products } = useAppContext();
+  if (user == null) return;
+  if (!("id" in user)) return;
   return (
     <ThemedView style={styles.product_list} colorName="none">
       {cartItems
+        .filter((cartItem) => cartItem.user_id === user.id)
         .map((cartItem) => {
           return {
             cartItem,

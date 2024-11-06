@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import IconButton from "@/components/buttons/IconButton";
 import ViewButton from "@/components/buttons/ViewButton";
 import { URL_BASE } from "@/constants/glabals";
-import { updateCartItems, useAppContext } from "@/context/AppProvider";
+import { updateCartItems, updateWishlistItems, useAppContext } from "@/context/AppProvider";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
@@ -18,7 +18,7 @@ export default function Product({
   price: number;
   imageUrl?: string | URL | null;
 }) {
-  const { user, setCartItems } = useAppContext();
+  const { user, setCartItems, setWishlistItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
@@ -38,6 +38,24 @@ export default function Product({
       .then((data) => {
         console.log(data);
         updateCartItems(setCartItems);
+      });
+  }
+  function addWishlistItemItem(product_id: number) {
+    const fd = new FormData();
+    fd.append("user_id", String(user.id));
+    fd.append("product_id", String(product_id));
+    fd.append("quantity", "1");
+
+    fetch(`${URL_BASE}/api/wishlistItems/create`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        updateWishlistItems(setWishlistItems);
       });
   }
 
@@ -80,7 +98,9 @@ export default function Product({
                 styles.product__button_icon,
                 styles.product__wishlist_add,
               ],
-              onPress: () => {},
+              onPress: () => {
+                addWishlistItemItem(id);
+              },
             }}
             underlayProps={{
               style: {

@@ -6,18 +6,41 @@ import { URL_BASE } from "@/constants/glabals";
 import { useAppContext } from "@/context/AppProvider";
 
 export default function ProductList() {
-  const { products } = useAppContext();
-
+  const { user, wishlistItems, products } = useAppContext();
+  if (user == null) return;
+  if (!("id" in user)) return;
   return (
     <ThemedView style={styles.product_list} colorName="surface_background">
-      {products.map((v, i) => {
-        let title = v.title;
-        let price = v.price;
-        let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;
-        return (
-          <Product key={i} title={title} price={price} imageUrl={image_link} />
-        );
-      })}
+      {wishlistItems
+        .filter((wishlistItem) => wishlistItem.user_id === user.id)
+        .map((wishlistItem) => {
+          return {
+            wishlistItem,
+            product: products.find(
+              (p) => String(p.id) === String(wishlistItem.product_id)
+            ),
+          };
+        })
+        .map(({ wishlistItem, product }, i) => {
+          if (!product) return;
+          let id = product.id;
+          let title = product.title;
+          let price = product.price;
+          let image_link = product.iamge_link
+            ? `${URL_BASE}${product.iamge_link}`
+            : null;
+          let item_id = wishlistItem.id;
+          return (
+            <Product
+              key={i}
+              item_id={item_id}
+              id={id}
+              title={title}
+              price={price}
+              imageUrl={image_link}
+            />
+          );
+        })}
     </ThemedView>
   );
 }

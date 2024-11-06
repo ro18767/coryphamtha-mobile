@@ -1,6 +1,6 @@
 import { URL_BASE } from "@/constants/glabals";
+import AsyncStorage from "@react-native-async-storage/async-storage/lib/module/index";
 import { createContext, useContext, useEffect, useState } from "react";
-
 const AppContext = createContext<any>(null);
 
 export const useAppContext = () => useContext(AppContext);
@@ -11,13 +11,40 @@ const AppProvider = ({ children }: { children: any }) => {
   const [categories, setCategories] = useState<any | null>([]);
   const [filterTags, setFilterTags] = useState<any | null>([]);
   const [cartItems, setCartItems] = useState<any | null>([]);
+  const [wishlistItems, setWishlistItems] = useState<any | null>([]);
 
   useEffect(() => {
     updateProducts(setProducts);
     updateCategories(setCategories);
     updateFilterTags(setFilterTags);
     updateCartItems(setCartItems);
+    updateWishlistItems(setWishlistItems);
   }, []);
+
+  useEffect(() => {
+    AsyncStorage.getItem("user").then((jsonValue) => {
+      if (jsonValue == null) return;
+      const id = JSON.parse(jsonValue).id;
+
+      fetch(`${URL_BASE}/api/users/view/${id}`)
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          console.log(data);
+          setUser(data.user);
+        });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (user != null) {
+      const jsonValue = JSON.stringify(user);
+      AsyncStorage.setItem("user", jsonValue);
+    } else {
+      AsyncStorage.removeItem("user");
+    }
+  }, [user]);
   return (
     <AppContext.Provider
       value={{
@@ -31,6 +58,8 @@ const AppProvider = ({ children }: { children: any }) => {
         setFilterTags,
         cartItems,
         setCartItems,
+        wishlistItems,
+        setWishlistItems,
       }}
     >
       {children}
@@ -79,5 +108,16 @@ export function updateCartItems(callback) {
     .then((data) => {
       console.log(data.cart_items);
       callback(data.cart_items);
+    });
+}
+
+export function updateWishlistItems(callback) {
+  fetch(`${URL_BASE}/api/wishlistItems`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data.wishlist_items);
+      callback(data.wishlist_items);
     });
 }
