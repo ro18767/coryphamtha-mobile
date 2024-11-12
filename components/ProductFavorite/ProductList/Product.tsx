@@ -7,6 +7,7 @@ import {
   updateWishlistItems,
   useAppContext,
 } from "@/context/AppProvider";
+import { usePopupContext } from "@/context/PopupContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
@@ -24,6 +25,10 @@ export default function Product({
   price: number;
   imageUrl?: string | URL | null;
 }) {
+  const popupContext = usePopupContext();
+  if (!popupContext) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { user, setWishlistItems, setCartItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
@@ -42,6 +47,13 @@ export default function Product({
   }
 
   function addCartItem(product_id: number) {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
     const fd = new FormData();
     fd.append("user_id", String(user.id));
     fd.append("product_id", String(product_id));
@@ -57,6 +69,11 @@ export default function Product({
       .then((data) => {
         console.log(data);
         updateCartItems(setCartItems);
+
+        setPopupVisible(false);
+        popupComponentName.current = "PopupCart";
+        setPopupData({});
+        setPopupVisible(true);
       });
   }
   return (

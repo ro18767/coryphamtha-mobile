@@ -5,28 +5,19 @@ import { useEffect, useState } from "react";
 import { URL_BASE } from "@/constants/glabals";
 
 export default function ProductList({
+  products,
   offset,
   limit,
   totalCount,
 }: {
+  products: any;
   offset: number;
   limit: number;
   totalCount: number;
 }) {
-  const [data, setData] = useState(null);
-  useEffect(() => {
-    fetch(`${URL_BASE}/api/products`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setData(data);
-      });
-  }, []);
   return (
     <ThemedView style={styles.product_list} colorName="surface_background">
-      {(data?.products ?? []).map((v, i) => {
+      {products.map((v, i) => {
         let title = v.title;
         let price = v.price;
         let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;

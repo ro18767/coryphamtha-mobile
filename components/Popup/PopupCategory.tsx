@@ -190,20 +190,34 @@ export default function PopupCategory() {
 
   const { categories } = useAppContext();
 
-  const level0 = categories.filter((c) => c.level === 0);
-  const level1 = categories.filter((c) => c.level === 1);
-  const level2 = categories.filter((c) => c.level === 2);
+  const level0 = categories.filter((c) => +c.level === 0);
+  const level1 = categories.filter((c) => +c.level === 1);
+  const level2 = categories.filter((c) => +c.level === 2);
 
   const item_list_data = level0.map((pc) => {
     const children = level1
       .filter((cc) => pc.id === cc.main)
       .map((pc) => {
-        const children = level2.filter((cc) => pc.id === cc.main);
+        const children = level2
+          .filter((cc) => pc.id === cc.main)
+          .map((pc) => {
+            const children: any[] = [];
 
-        return { ...pc, children: children.length ? children : undefined };
+            return {
+              category_item: pc,
+              children: children.length ? children : undefined,
+            };
+          });
+
+        return {
+          category_item: pc,
+          children: children.length ? children : undefined,
+        };
       });
-
-    return { ...pc, children: children.length ? children : undefined };
+    return {
+      category_item: pc,
+      children: children.length ? children : undefined,
+    };
   });
   console.log({ item_list_data });
 
@@ -212,6 +226,10 @@ export default function PopupCategory() {
   const [openCatArr, setOpenCatArr] = useState(
     [] satisfies number[] as number[]
   );
+
+  useEffect(() => {
+    console.log({ openCatArr });
+  }, [openCatArr]);
   return (
     <>
       <Pressable
@@ -228,11 +246,11 @@ export default function PopupCategory() {
           style={styles.container}
           colorName="secondary_outline_background"
         >
-          {item_list_data.map((item, i) => {
+          {item_list_data.map((item_data, i) => {
             return (
               <PopupCategoryItem
-                key={i}
-                item={item}
+                key={`${0}:${i}`}
+                item_data={item_data}
                 openCatArr={openCatArr}
                 setOpenCatArr={setOpenCatArr}
               />
@@ -245,12 +263,12 @@ export default function PopupCategory() {
 }
 
 function PopupCategoryItem({
-  item,
+  item_data,
   level = 0,
   openCatArr,
   setOpenCatArr,
 }: {
-  item: ProductCategory;
+  item_data: any;
   level?: number;
   openCatArr: any;
   setOpenCatArr: any;
@@ -260,13 +278,23 @@ function PopupCategoryItem({
 
   const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
-  const { link, title, source, children } = item;
-  const opened = useMemo(() => openCatArr[level] === item, [openCatArr]);
-  useEffect(() => {
-    console.log(opened);
-  }, [opened]);
-  useEffect(() => {
-    console.log(openCatArr);
+
+  const { category_item, children } = item_data;
+
+  let item = null;
+  let link = "/";
+  let params = {};
+  if (category_item) {
+    item = category_item;
+    link = `/filter`;
+    params = {
+      category: `${item.id}`,
+    };
+  }
+  if (item == null) return;
+  const { title, source } = item;
+  const opened = useMemo(() => {
+    return openCatArr[level] === item;
   }, [openCatArr]);
   return (
     <>
@@ -314,6 +342,7 @@ function PopupCategoryItem({
             onPress: () => {
               setPopoverVisible(false);
               router.navigate(link);
+              router.setParams(params);
             },
           }}
         >
@@ -332,12 +361,11 @@ function PopupCategoryItem({
       )}
 
       {opened && children && children.length > 0
-        ? children.map((sub_item, i) => {
+        ? children.map((sub_item_data, i) => {
             return (
-              <View style={styles.level_pading}>
+              <View style={styles.level_pading} key={`${+level + 1}:${i}`}>
                 <PopupCategoryItem
-                  key={i}
-                  item={sub_item}
+                  item_data={sub_item_data}
                   level={level + 1}
                   openCatArr={openCatArr}
                   setOpenCatArr={setOpenCatArr}

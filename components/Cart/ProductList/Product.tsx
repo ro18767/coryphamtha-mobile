@@ -118,7 +118,6 @@ export default function Product({
 
 const styles = StyleSheet.create({
   product_wrap_space: {
-    paddingHorizontal: 8,
     height: "auto",
     overflow: "hidden",
     gap: 8,

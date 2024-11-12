@@ -7,6 +7,7 @@ import TextButton from "@/components/buttons/TextButton";
 import { useEffect, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
+import { useAppContext } from "@/context/AppProvider";
 
 const data = {
   category: {
@@ -14,7 +15,73 @@ const data = {
   },
 };
 
+function FilterTag({ v }: { v: any }) {
+  const [checked, setChecked] = useState(false);
+
+  const borderColor = useThemeColor({}, "secondary_outline_text");
+  const checkColor = useThemeColor({}, "secondary_outline_background");
+  const backgroundColor = useThemeColor({}, "secondary_outline_text");
+
+  return (
+    <ViewButton
+      pressableProps={{
+        onPress: () => {
+          setChecked(!checked);
+        },
+      }}
+      conteinerProps={{
+        colorName: "secondary_outline_background",
+        style: styles.filter__tag_filter_wrap,
+      }}
+    >
+      <View
+        style={[
+          { borderColor },
+          checked ? { backgroundColor } : undefined,
+          styles.filter__tag_option_input,
+        ]}
+      >
+        <View
+          style={[
+            { backgroundColor: checkColor },
+            checked ? undefined : { display: "none" },
+            styles.filter__tag_option_input_check,
+          ]}
+        />
+      </View>
+      <ThemedText
+        colorName="surface_text"
+        style={styles.filter__tag_option_label}
+      >
+        {v.title}
+      </ThemedText>
+    </ViewButton>
+  );
+}
+
 function FilterTags({ showFilter }: { showFilter: number }) {
+  const [min, onChnageMin] = useState("");
+  const [max, onChnageMax] = useState("");
+
+  const [isFirstRender, setFirstRender] = useState(true);
+
+  const { filterTagCategories, filterTags } = useAppContext();
+
+  // // const { filterTagCategories, filterTags } = useAppContext();
+
+  // useEffect(() => {
+  //   if (isFirstRender) return;
+  //   // router.setParams({ min });
+  // }, [min]);
+  // useEffect(() => {
+  //   if (isFirstRender) return;
+  //   // router.setParams({ max });
+  // }, [max]);
+
+  // useEffect(() => {
+  //   // setTimeout(() => setFirstRender(false), 0);
+  // }, []);
+
   const color = useThemeColor({}, "surface_text");
   const borderColor = useThemeColor(
     {
@@ -23,6 +90,8 @@ function FilterTags({ showFilter }: { showFilter: number }) {
     },
     "surface_outline_background"
   );
+  console.log({ filterTagCategories });
+
   return (
     <ThemedView
       style={styles.filter__popup}
@@ -62,7 +131,7 @@ function FilterTags({ showFilter }: { showFilter: number }) {
               },
               styles.filter__price_wrap__input,
             ]}
-            onChangeText={(text) => {}}
+            onChangeText={onChnageMin}
             placeholder="Від"
             keyboardType="numeric"
             inputMode="numeric"
@@ -75,7 +144,7 @@ function FilterTags({ showFilter }: { showFilter: number }) {
               },
               styles.filter__price_wrap__input,
             ]}
-            onChangeText={(text) => {}}
+            onChangeText={onChnageMax}
             placeholder="До"
             keyboardType="numeric"
             inputMode="numeric"
@@ -83,68 +152,21 @@ function FilterTags({ showFilter }: { showFilter: number }) {
         </View>
       </View>
       <View style={styles.filter__tag_list_wrap}>
-        {Array.from({ length: 6 }).map((v, i) => {
+        {filterTagCategories.map((vc, i) => {
           return (
             <View key={i} style={styles.filter__tag_wrap}>
               <ThemedText
                 colorName="secondary_outline_text"
                 style={styles.filter__tag_label}
               >
-                Наявність
+                {vc.title}
               </ThemedText>
               <View style={styles.filter__tag_mini_list_wrap}>
-                {Array.from({ length: 3 }).map((v, i) => {
-                  const [checked, setChecked] = useState(false);
-
-                  const borderColor = useThemeColor(
-                    {},
-                    "secondary_outline_text"
-                  );
-                  const checkColor = useThemeColor(
-                    {},
-                    "secondary_outline_background"
-                  );
-                  const backgroundColor = useThemeColor(
-                    {},
-                    "secondary_outline_text"
-                  );
-                  return (
-                    <ViewButton
-                      key={i}
-                      pressableProps={{
-                        onPress: () => {
-                          setChecked(!checked);
-                        },
-                      }}
-                      conteinerProps={{
-                        colorName: "secondary_outline_background",
-                        style: styles.filter__tag_filter_wrap,
-                      }}
-                    >
-                      <View
-                        style={[
-                          { borderColor },
-                          checked ? { backgroundColor } : undefined,
-                          styles.filter__tag_option_input,
-                        ]}
-                      >
-                        <View
-                          style={[
-                            { backgroundColor: checkColor },
-                            checked ? undefined : { display: "none" },
-                            styles.filter__tag_option_input_check,
-                          ]}
-                        />
-                      </View>
-                      <ThemedText
-                        colorName="surface_text"
-                        style={styles.filter__tag_option_label}
-                      >
-                        Є в наявності
-                      </ThemedText>
-                    </ViewButton>
-                  );
-                })}
+                {filterTags
+                  .filter((v) => +v.product_filter_tag_category_id === +vc.id)
+                  .map((v, i) => (
+                    <FilterTag v={v} key={i} />
+                  ))}
               </View>
             </View>
           );

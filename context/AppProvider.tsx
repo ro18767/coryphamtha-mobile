@@ -10,6 +10,9 @@ const AppProvider = ({ children }: { children: any }) => {
   const [products, setProducts] = useState<any | null>([]);
   const [categories, setCategories] = useState<any | null>([]);
   const [filterTags, setFilterTags] = useState<any | null>([]);
+  const [filterTagCategories, setFilterTagCategories] = useState<any | null>(
+    []
+  );
   const [cartItems, setCartItems] = useState<any | null>([]);
   const [wishlistItems, setWishlistItems] = useState<any | null>([]);
 
@@ -17,6 +20,7 @@ const AppProvider = ({ children }: { children: any }) => {
     updateProducts(setProducts);
     updateCategories(setCategories);
     updateFilterTags(setFilterTags);
+    updateFilterTagCategories(setFilterTagCategories);
     updateCartItems(setCartItems);
     updateWishlistItems(setWishlistItems);
   }, []);
@@ -31,8 +35,14 @@ const AppProvider = ({ children }: { children: any }) => {
           return res.json();
         })
         .then((data) => {
-          console.log(data);
-          setUser(data.user);
+          if (data?.user) {
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
+        })
+        .catch(() => {
+          setUser(null);
         });
     });
   }, []);
@@ -56,6 +66,8 @@ const AppProvider = ({ children }: { children: any }) => {
         setCategories,
         filterTags,
         setFilterTags,
+        filterTagCategories,
+        setFilterTagCategories,
         cartItems,
         setCartItems,
         wishlistItems,
@@ -90,6 +102,16 @@ export function updateCategories(callback) {
     });
 }
 export function updateFilterTags(callback) {
+  fetch(`${URL_BASE}/api/products/get_filter_tags`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data.filter_tags);
+      callback(data.filter_tags);
+    });
+}
+export function updateFilterTagCategories(callback) {
   fetch(`${URL_BASE}/api/products/get_filter_tag_categories`)
     .then((res) => {
       return res.json();

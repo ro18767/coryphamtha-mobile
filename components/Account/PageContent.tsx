@@ -42,18 +42,6 @@ export default function PageContent() {
     if (!("id" in user)) return;
     if (user.id == null) return;
 
-    //   data = array(
-    //     'email' => $this->input->post('email'),
-    //     'emailVerificationCode' => $this->input->post('emailVerificationCode'),
-    //     'phoneVerificationCode' => $this->input->post('phoneVerificationCode'),
-    //     'loginVerificationCode' => $this->input->post('loginVerificationCode'),
-    //     'address_id' => $this->input->post('address_id'),
-    //     'sex' => $this->input->post('sex'),
-    //     'firstName' => $this->input->post('firstName'),
-    //     'lastName' => $this->input->post('lastName'),
-    //     'birthday' => $this->input->post('birthday')
-    // );
-
     const fd = new FormData();
     fd.append("firstName", fname);
     fd.append("lastName", lname);

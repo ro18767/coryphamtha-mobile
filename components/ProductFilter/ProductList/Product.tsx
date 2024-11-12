@@ -2,8 +2,14 @@ import { ThemedText } from "@/components/ThemedText";
 import IconButton from "@/components/buttons/IconButton";
 import ViewButton from "@/components/buttons/ViewButton";
 import { URL_BASE } from "@/constants/glabals";
-import { updateCartItems, updateWishlistItems, useAppContext } from "@/context/AppProvider";
+import {
+  updateCartItems,
+  updateWishlistItems,
+  useAppContext,
+} from "@/context/AppProvider";
+import { usePopupContext } from "@/context/PopupContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
@@ -18,11 +24,22 @@ export default function Product({
   price: number;
   imageUrl?: string | URL | null;
 }) {
+  const popupContext = usePopupContext();
+  if (!popupContext) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { user, setCartItems, setWishlistItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
   function addCartItem(product_id: number) {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = 'PopupSignIn';
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
     const fd = new FormData();
     fd.append("user_id", String(user.id));
     fd.append("product_id", String(product_id));
@@ -38,9 +55,23 @@ export default function Product({
       .then((data) => {
         console.log(data);
         updateCartItems(setCartItems);
+
+        setPopupVisible(false);
+        popupComponentName.current = "PopupCart";
+        setPopupData({});
+        setPopupVisible(true);
       });
+
+
   }
   function addWishlistItemItem(product_id: number) {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = 'PopupSignIn';
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
     const fd = new FormData();
     fd.append("user_id", String(user.id));
     fd.append("product_id", String(product_id));
@@ -56,7 +87,10 @@ export default function Product({
       .then((data) => {
         console.log(data);
         updateWishlistItems(setWishlistItems);
+        
+        router.navigate("/favorite");
       });
+      
   }
 
   return (

@@ -79,8 +79,8 @@ export default function PopupMenu() {
         {item_list_data.map((v, i) => {
           const { link, source, title } = v;
           return (
-            <Link href={link} style={styles.link_row_wrap}>
-              <View key={i} style={[styles.link_row, { borderColor }]}>
+            <Link key={i} href={link} style={styles.link_row_wrap}>
+              <View style={[styles.link_row, { borderColor }]}>
                 <View style={[styles.icon_wrap]}>
                   <Image source={source} style={[styles.icon]} />
                 </View>
