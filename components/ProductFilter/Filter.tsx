@@ -9,12 +9,6 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
 import { useAppContext } from "@/context/AppProvider";
 
-const data = {
-  category: {
-    title: "Бантики",
-  },
-};
-
 function FilterTag({ v }: { v: any }) {
   const [checked, setChecked] = useState(false);
 
@@ -176,7 +170,7 @@ function FilterTags({ showFilter }: { showFilter: number }) {
   );
 }
 
-export default function Filter() {
+export default function Filter({selected_category}) {
   const { showFilter: showFilterParam } = useLocalSearchParams<{
     showFilter: string;
   }>();
@@ -185,7 +179,7 @@ export default function Filter() {
   return (
     <ThemedView style={styles.filter} colorName="surface_background">
       <ThemedText colorName="primary_outline_text" style={styles.filter__title}>
-        {data.category.title}
+        {selected_category?.title ?? "Товари"}
       </ThemedText>
       <IconButton
         pressableProps={{

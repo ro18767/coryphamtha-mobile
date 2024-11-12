@@ -3,13 +3,30 @@ import ViewButton from "@/components/buttons/ViewButton";
 import CartBlock from "@/components/Cart/ProductList/CartBlock";
 import ProductList from "@/components/Cart/ProductList/ProductList";
 import { ThemedText } from "@/components/ThemedText";
-import { useAppContext } from "@/context/AppProvider";
+import { URL_BASE } from "@/constants/glabals";
+import {
+  updateCartItems,
+  updateOrders,
+  updateOrdersItems,
+  useAppContext,
+} from "@/context/AppProvider";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, TextInput, View } from "react-native";
 
 export default function CartPage() {
-  const { user, setUser } = useAppContext();
+  const {
+    user,
+    setUser,
+    orders,
+    setOrders,
+    orderItems,
+    setOrderItems,
+    cartItems,
+    setCartItems,
+  } = useAppContext();
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const color = useThemeColor({}, "secondary_outline_text");
@@ -22,7 +39,9 @@ export default function CartPage() {
   );
 
   const [editMode, setEditMode] = useState(true);
-  const [fname, onChangeFname] = useState<string>(String(user?.firstName ?? ""));
+  const [fname, onChangeFname] = useState<string>(
+    String(user?.firstName ?? "")
+  );
   const [lname, onChangeLname] = useState<string>(String(user?.lastName ?? ""));
   const [phone, onChangePhone] = useState<string>(String(user?.phone ?? ""));
   const [email, onChangeEmail] = useState<string>(String(""));
@@ -38,15 +57,62 @@ export default function CartPage() {
     if (user.id == null) return;
 
     const fd = new FormData();
-    fd.append("fname", fname);
-    fd.append("lname", lname);
-    fd.append("phone", phone);
-    fd.append("city", city);
-    fd.append("street", street);
-    fd.append("home", home);
-    fd.append("comment", comment);
-    fd.append("postOffice", comment);
-    console.log("fd", [...fd]);
+    fd.append("user_id", user.id);
+    fd.append("user_phone", "");
+
+    fetch(`${URL_BASE}/api/Orders/create`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        let promises = cartItems.map((ci) => {
+          const fd = new FormData();
+          fd.append("order_id", data.data.id);
+          fd.append("quantity", ci.quantity);
+          fd.append("product_id", ci.product_id);
+
+          fetch(`${URL_BASE}/api/OrderItems/create`, {
+            method: "post",
+            body: fd,
+          })
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              console.log(data);
+
+              updateOrders(setOrders);
+              updateOrdersItems(setOrderItems);
+
+              router.navigate("/thank_you");
+              mainScrollViewRef.current?.scrollTo({
+                y: 0,
+                animated: true,
+              });
+            });
+        });
+
+        Promise.allSettled(promises).then(() => {
+          cartItems.map((ci) => {
+            fetch(`${URL_BASE}/api/CartItems/delete/${ci.id}`)
+              .then((res) => {
+                return res.json();
+              })
+              .then((data) => {
+                console.log(data);
+
+                updateCartItems(setCartItems);
+              });
+          });
+        });
+      });
+
+    // updateOrders(setOrders);
   }
   return (
     <>
@@ -209,9 +275,14 @@ export default function CartPage() {
           />
         </View>
 
-        <View style={[styles.form_section, {
-          paddingBottom: 40
-        }]}>
+        <View
+          style={[
+            styles.form_section,
+            {
+              paddingBottom: 40,
+            },
+          ]}
+        >
           <ThemedText
             style={styles.container__input_label}
             colorName="surface_text"

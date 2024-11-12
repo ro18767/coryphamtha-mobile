@@ -8,11 +8,7 @@ import { useEffect, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
 
-const data = {
-  category: {
-    title: "Бантики",
-  },
-};
+
 
 export default function PageTitle() {
   const { showFilter: showFilterParam } = useLocalSearchParams<{

@@ -89,7 +89,7 @@ export default function Index() {
 
   return (
     <>
-      <Filter />
+      <Filter selected_category={selected_category}/>
       <ProductList
         products={filtered_products}
         offset={offset}

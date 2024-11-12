@@ -16,6 +16,9 @@ const AppProvider = ({ children }: { children: any }) => {
   const [cartItems, setCartItems] = useState<any | null>([]);
   const [wishlistItems, setWishlistItems] = useState<any | null>([]);
 
+  const [orders, setOrders] = useState<any | null>([]);
+  const [orderItems, setOrderItems] = useState<any | null>([]);
+
   useEffect(() => {
     updateProducts(setProducts);
     updateCategories(setCategories);
@@ -23,6 +26,8 @@ const AppProvider = ({ children }: { children: any }) => {
     updateFilterTagCategories(setFilterTagCategories);
     updateCartItems(setCartItems);
     updateWishlistItems(setWishlistItems);
+    updateOrders(setOrders);
+    updateOrdersItems(setOrderItems);
   }, []);
 
   useEffect(() => {
@@ -72,6 +77,10 @@ const AppProvider = ({ children }: { children: any }) => {
         setCartItems,
         wishlistItems,
         setWishlistItems,
+        orders,
+        setOrders,
+        orderItems,
+        setOrderItems,
       }}
     >
       {children}
@@ -141,5 +150,26 @@ export function updateWishlistItems(callback) {
     .then((data) => {
       console.log(data.wishlist_items);
       callback(data.wishlist_items);
+    });
+}
+export function updateOrders(callback) {
+  fetch(`${URL_BASE}/api/orders`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      callback(data);
+    });
+}
+
+export function updateOrdersItems(callback) {
+  fetch(`${URL_BASE}/api/OrderItems`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data.order_items);
+      callback(data.order_items);
     });
 }
