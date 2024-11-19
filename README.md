@@ -48,3 +48,19 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+in 
+node_modules\@expo\cli\build\src\start\server\metro\MetroBundlerDevServer.js
+replace 
+        if (!opts.mainModuleName.startsWith("/")) {
+            opts.mainModuleName = "./" + opts.mainModuleName;
+        }
+to this
+        if (!opts.mainModuleName.startsWith("/") && !opts.mainModuleName.startsWith("C:\\")) {
+            opts.mainModuleName = "./" + opts.mainModuleName;
+        }
+
+
+npx expo run:android --variant release
+
+npx expo run:android --variant debug

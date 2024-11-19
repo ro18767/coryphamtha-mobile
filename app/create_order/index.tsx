@@ -88,12 +88,6 @@ export default function CartPage() {
 
               updateOrders(setOrders);
               updateOrdersItems(setOrderItems);
-
-              router.navigate("/thank_you");
-              mainScrollViewRef.current?.scrollTo({
-                y: 0,
-                animated: true,
-              });
             });
         });
 
@@ -108,6 +102,12 @@ export default function CartPage() {
 
                 updateCartItems(setCartItems);
               });
+          });
+
+          router.navigate("/thank_you");
+          mainScrollViewRef.current?.scrollTo({
+            y: 0,
+            animated: true,
           });
         });
       });
