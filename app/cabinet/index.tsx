@@ -46,7 +46,6 @@ export default function CartPage() {
     fd.append("home", home);
     fd.append("comment", comment);
     fd.append("postOffice", comment);
-    console.log("fd", [...fd]);
   }
   return (
     <>

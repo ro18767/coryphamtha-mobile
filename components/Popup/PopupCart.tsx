@@ -25,6 +25,21 @@ export default function PopupCart({ data: { successCallback } = {} }: any) {
   );
   return (
     <>
+      <ViewButton
+        pressableProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            opacity: 0.2,
+          },
+          onPress: () => {
+            setPopupVisible(false);
+          },
+        }}
+      />
       <View style={styles.backdrop} />
       <ThemedView style={styles.container} colorName="surface_background">
         <ScrollView
@@ -63,6 +78,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#000000",
     opacity: 0.2,
+    pointerEvents: "none",
   },
   container: {
     position: "absolute",

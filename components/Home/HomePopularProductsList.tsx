@@ -14,6 +14,7 @@ import TextButton from "@/components/buttons/TextButton";
 import { useEffect, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
+import { usePopoverContext } from "@/context/PopoverContext";
 
 type PopularProduct = {
   title: string;
@@ -69,6 +70,12 @@ export default function HomePopularProductsList() {
 function HomePopularProduct({ data }: { data: PopularProduct }) {
   const { title, source } = data;
   const borderColor = useThemeColor({}, "secondary_outline_text");
+
+  const popoverContext = usePopoverContext();
+
+  if (!popoverContext) return;
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
+  popoverContext;
   return (
     <View style={[styles.product_wrap, { borderColor }]}>
       <View style={[styles.product_image_wrap_pos]}>
@@ -85,7 +92,11 @@ function HomePopularProduct({ data }: { data: PopularProduct }) {
         <ViewButton
           pressableProps={{
             style: styles.product_button_pressable_wrap,
-            onPress: () => {},
+            onPress: () => {
+              popoverComponentName.current = "PopupCategory";
+              setPopoverData({});
+              setPopoverVisible(true);
+            },
           }}
           conteinerProps={{
             colorName: "secondary_background",

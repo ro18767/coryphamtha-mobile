@@ -44,11 +44,13 @@ export default function RootLayout({ children }: any) {
       <StatusBarSetup />
       <SafeAreaView style={{ flex: 1 }}>
         <AppProvider>
-          <PopupProvider>
-            <PopoverProvider>
-              <Children />
-            </PopoverProvider>
-          </PopupProvider>
+          <View style={{ flex: 1 }}>
+            <PopupProvider>
+              <PopoverProvider>
+                <Children />
+              </PopoverProvider>
+            </PopupProvider>
+          </View>
         </AppProvider>
       </SafeAreaView>
     </>
@@ -65,11 +67,11 @@ function Children({ children }: any) {
 
   const { popoverVisible, popoverData, popoverComponentName } = popoverContext;
 
-  useEffect(() => {
-    console.log(popupVisible);
-    console.log(popupData);
-    console.log(popupComponentName);
-  }, [popupVisible, popupData, popupComponentName]);
+  // useEffect(() => {
+  //   console.log(popupVisible);
+  //   console.log(popupData);
+  //   console.log(popupComponentName);
+  // }, [popupVisible, popupData, popupComponentName]);
   return (
     <>
       <Header />

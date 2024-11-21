@@ -10,6 +10,7 @@ import { Sizes } from "@/constants/Sizes";
 import React from "react";
 import { URL_BASE } from "@/constants/glabals";
 import { useAppContext } from "@/context/AppProvider";
+import ViewButton from "../buttons/ViewButton";
 
 export default function PopupSignIn() {
   const popupContext = usePopupContext();
@@ -60,8 +61,7 @@ export default function PopupSignIn() {
       .then((data) => {
         if (data.status === "Phone error") return;
         setUser(data.user);
-        if(!data.user.address_id) {
-          
+        if (!data.user.address_id) {
         }
 
         setPopupVisible(false);
@@ -69,6 +69,21 @@ export default function PopupSignIn() {
   }
   return (
     <>
+      <ViewButton
+        pressableProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            opacity: 0.2
+          },
+          onPress: () => {
+            setPopupVisible(false);
+          },
+        }}
+      />
       <View style={styles.backdrop} />
       <ThemedView style={styles.container} colorName="surface_background">
         <ThemedText
@@ -247,6 +262,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#000000",
     opacity: 0.2,
+    pointerEvents: "none",
   },
   container: {
     position: "absolute",

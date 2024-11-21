@@ -68,7 +68,6 @@ export default function CartPage() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
 
         let promises = cartItems.map((ci) => {
           const fd = new FormData();
@@ -84,7 +83,6 @@ export default function CartPage() {
               return res.json();
             })
             .then((data) => {
-              console.log(data);
 
               updateOrders(setOrders);
               updateOrdersItems(setOrderItems);
@@ -98,16 +96,15 @@ export default function CartPage() {
                 return res.json();
               })
               .then((data) => {
-                console.log(data);
 
                 updateCartItems(setCartItems);
               });
           });
 
-          router.navigate("/thank_you");
+          router.push("/thank_you");
           mainScrollViewRef.current?.scrollTo({
             y: 0,
-            animated: true,
+            animated: false,
           });
         });
       });

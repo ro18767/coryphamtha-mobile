@@ -84,8 +84,8 @@ function FilterTags({ showFilter }: { showFilter: number }) {
     },
     "surface_outline_background"
   );
-  console.log({ filterTagCategories });
-
+  // console.log({ filterTagCategories });
+// 
   return (
     <ThemedView
       style={styles.filter__popup}

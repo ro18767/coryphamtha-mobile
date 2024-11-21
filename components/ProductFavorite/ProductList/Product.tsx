@@ -41,7 +41,7 @@ export default function Product({
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         updateWishlistItems(setWishlistItems);
       });
   }
@@ -67,7 +67,7 @@ export default function Product({
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         updateCartItems(setCartItems);
 
         setPopupVisible(false);

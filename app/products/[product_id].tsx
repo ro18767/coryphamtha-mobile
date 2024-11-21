@@ -1,6 +1,6 @@
 import EmailSubscribe from "@/components/EmailSubscribe/EmailSubscribe";
 import { Image, StyleSheet, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -9,6 +9,7 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 import { usePopupContext } from "@/context/PopupContext";
 import { usePopoverContext } from "@/context/PopoverContext";
 import IconButton from "@/components/buttons/IconButton";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 
 export default function ProductPage() {
   return (
@@ -31,9 +32,6 @@ export function ProductDisplay() {
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
-  // popoverComponentName.current = "PopupCategory";
-  // setPopoverData({});
-  // setPopoverVisible(true);
 
   const [showThankYouPopover, setShowThankYouPopover] = useState(false);
 
@@ -92,7 +90,13 @@ export function ProductDisplay() {
                 style: styles.product__bottom_buttons_button_wrap,
               }}
               pressableProps={{
-                onPress: () => {},
+                onPress: () => {
+                  router.push("/return_polisy");
+                  mainScrollViewRef.current?.scrollTo({
+                    y: 0,
+                    animated: false,
+                  });
+                },
               }}
               conteinerProps={{
                 style: [
@@ -116,7 +120,13 @@ export function ProductDisplay() {
                 style: styles.product__bottom_buttons_button_wrap,
               }}
               pressableProps={{
-                onPress: () => {},
+                onPress: () => {
+                  router.push("/payments");
+                  mainScrollViewRef.current?.scrollTo({
+                    y: 0,
+                    animated: false,
+                  });
+                },
               }}
               conteinerProps={{
                 style: [
@@ -140,7 +150,13 @@ export function ProductDisplay() {
                 style: styles.product__bottom_buttons_button_wrap,
               }}
               pressableProps={{
-                onPress: () => {},
+                onPress: () => {
+                  router.push("/delivery_across_ukraine");
+                  mainScrollViewRef.current?.scrollTo({
+                    y: 0,
+                    animated: false,
+                  });
+                },
               }}
               conteinerProps={{
                 style: [
@@ -241,7 +257,6 @@ export function ProductDisplay() {
                   popupComponentName.current = "PopupBuy";
                   setPopupData({
                     successCallback: () => {
-                      console.log("successCallback");
 
                       setShowThankYouPopover(true);
                     },

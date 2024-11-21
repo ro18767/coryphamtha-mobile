@@ -61,10 +61,8 @@ export default function PageContent() {
             return res.json();
           })
           .then((data) => {
-            console.log(data);
             setUser(data.user);
           });
-        console.log(data);
       });
 
     // fd.append("city", city);

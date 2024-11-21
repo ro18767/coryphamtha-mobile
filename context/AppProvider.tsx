@@ -96,7 +96,7 @@ export function updateProducts(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.products);
+      // console.log(data.products);
       callback(data.products);
     });
 }
@@ -106,7 +106,7 @@ export function updateCategories(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.categories);
+      // console.log(data.categories);
       callback(data.categories);
     });
 }
@@ -116,7 +116,7 @@ export function updateFilterTags(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.filter_tags);
+      // console.log(data.filter_tags);
       callback(data.filter_tags);
     });
 }
@@ -126,7 +126,7 @@ export function updateFilterTagCategories(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.filter_tag_categories);
+      // console.log(data.filter_tag_categories);
       callback(data.filter_tag_categories);
     });
 }
@@ -137,7 +137,7 @@ export function updateCartItems(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.cart_items);
+      // console.log(data.cart_items);
       callback(data.cart_items);
     });
 }
@@ -148,7 +148,7 @@ export function updateWishlistItems(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.wishlist_items);
+      // console.log(data.wishlist_items);
       callback(data.wishlist_items);
     });
 }
@@ -158,7 +158,7 @@ export function updateOrders(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data);
+      // console.log(data);
       callback(data);
     });
 }
@@ -169,7 +169,7 @@ export function updateOrdersItems(callback) {
       return res.json();
     })
     .then((data) => {
-      console.log(data.order_items);
+      // console.log(data.order_items);
       callback(data.order_items);
     });
 }

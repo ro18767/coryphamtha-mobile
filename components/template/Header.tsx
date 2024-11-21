@@ -7,6 +7,7 @@ import TextButton from "@/components/buttons/TextButton";
 import { Sizes } from "@/constants/Sizes";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { usePopupContext } from "@/context/PopupContext";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 
 export default function Header() {
   const popoverContext = usePopoverContext();
@@ -58,7 +59,11 @@ export default function Header() {
           onPress: () => {
             setPopoverVisible(false);
             setPopupVisible(false);
-            router.navigate("/");
+            router.push("/");
+            mainScrollViewRef.current?.scrollTo({
+              y: 0,
+              animated: false,
+            });
           },
         }}
         conteinerProps={{
@@ -70,7 +75,7 @@ export default function Header() {
           colorName: "primary_text",
         }}
       >
-        BOTANICA
+        CORYPHAM
       </TextButton>
 
       <View

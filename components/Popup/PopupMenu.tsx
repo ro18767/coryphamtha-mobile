@@ -51,8 +51,8 @@ export default function PopupMenu() {
     popoverContext;
   const borderColor = useThemeColor(
     {
-      light: "#898989",
-      dark: "#898989",
+      light: "#89898980",
+      dark: "#89898980",
     },
     "surface_outline_background"
   );
@@ -61,12 +61,22 @@ export default function PopupMenu() {
 
   return (
     <>
-      <Pressable
-        style={styles.backdrop}
-        onPress={() => {
-          setPopoverVisible(false);
+      <ViewButton
+        pressableProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            opacity: 0.2,
+          },
+          onPress: () => {
+            setPopoverVisible(false);
+          },
         }}
       />
+      <View style={styles.backdrop} />
 
       <ThemedView
         style={styles.container}
@@ -106,6 +116,7 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     bottom: 0,
+    pointerEvents: "none",
   },
   arrow: {
     height: 24,

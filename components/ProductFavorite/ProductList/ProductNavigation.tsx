@@ -47,12 +47,12 @@ export default function ProductNavigation({
             1
           ),
         }).map((v, i) => {
-          console.log(
-            offset,
-            limit,
-            offset / DEFAULT_PRODUCT_FILTER_LIMIT,
-            (offset + limit) / DEFAULT_PRODUCT_FILTER_LIMIT
-          );
+          // console.log(
+          //   offset,
+          //   limit,
+          //   offset / DEFAULT_PRODUCT_FILTER_LIMIT,
+          //   (offset + limit) / DEFAULT_PRODUCT_FILTER_LIMIT
+          // );
 
           const color =
             i >= Math.floor(offset / DEFAULT_PRODUCT_FILTER_LIMIT) &&
@@ -65,7 +65,7 @@ export default function ProductNavigation({
                   },
                   "surface_outline_background"
                 );
-          console.log(i * DEFAULT_PRODUCT_FILTER_LIMIT);
+          // console.log(i * DEFAULT_PRODUCT_FILTER_LIMIT);
 
           return (
             <ViewButton

@@ -21,14 +21,13 @@ import React from "react";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { Link, router } from "expo-router";
 import { useAppContext } from "@/context/AppProvider";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 type ProductCategory = {
   title: string;
   link: string;
   source?: ImageSourcePropType;
   children?: ProductCategory[];
 };
-
-
 
 export default function PopupCategory() {
   const popoverContext = usePopoverContext();
@@ -65,7 +64,6 @@ export default function PopupCategory() {
       children: children.length ? children : undefined,
     };
   });
-  console.log({ item_list_data });
 
   const { setPopoverData, setPopoverVisible } = popoverContext;
 
@@ -73,37 +71,49 @@ export default function PopupCategory() {
     [] satisfies number[] as number[]
   );
 
-  useEffect(() => {
-    console.log({ openCatArr });
-  }, [openCatArr]);
   return (
     <>
-      <Pressable
-        style={styles.backdrop}
-        onPress={() => {
-          setPopoverVisible(false);
+      <ViewButton
+        pressableProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            opacity: 0.2,
+          },
+          onPress: () => {
+            setPopoverVisible(false);
+          },
         }}
       />
-      <ScrollView
-        style={[styles.scroll_container, { flexShrink: 1 }]}
-        contentContainerStyle={{ flexShrink: 1 }}
-      >
-        <ThemedView
-          style={styles.container}
-          colorName="secondary_outline_background"
+      <View style={styles.backdrop} />
+      <View style={styles.scroll_container_wrap}>
+        <ScrollView
+          style={[styles.scroll_container, { flexShrink: 1 }]}
+          contentContainerStyle={{
+            flexShrink: 1,
+            backgroundColor: "none",
+          }}
         >
-          {item_list_data.map((item_data, i) => {
-            return (
-              <PopupCategoryItem
-                key={`${0}:${i}`}
-                item_data={item_data}
-                openCatArr={openCatArr}
-                setOpenCatArr={setOpenCatArr}
-              />
-            );
-          })}
-        </ThemedView>
-      </ScrollView>
+          <ThemedView
+            style={styles.container}
+            colorName="secondary_outline_background"
+          >
+            {item_list_data.map((item_data, i) => {
+              return (
+                <PopupCategoryItem
+                  key={`${0}:${i}`}
+                  item_data={item_data}
+                  openCatArr={openCatArr}
+                  setOpenCatArr={setOpenCatArr}
+                />
+              );
+            })}
+          </ThemedView>
+        </ScrollView>
+      </View>
     </>
   );
 }
@@ -187,8 +197,12 @@ function PopupCategoryItem({
           pressableProps={{
             onPress: () => {
               setPopoverVisible(false);
-              router.navigate(link);
+              router.push(link);
               router.setParams(params);
+              mainScrollViewRef.current?.scrollTo({
+                y: 0,
+                animated: false,
+              });
             },
           }}
         >
@@ -227,21 +241,30 @@ function PopupCategoryItem({
 const styles = StyleSheet.create({
   backdrop: {
     position: "absolute",
-    top: 0,
+    top: Sizes.HEADER_HEIGHT,
     right: 0,
     left: 0,
     bottom: 0,
+    pointerEvents: "none",
+    opacity: 0.2,
+    backgroundColor: "#000000",
   },
-  scroll_container: {
+  scroll_container_wrap: {
     position: "absolute",
     top: Sizes.HEADER_HEIGHT,
     right: 0,
     left: 0,
     bottom: 0,
+    pointerEvents: "none",
+  },
+  scroll_container: {
+    pointerEvents: "auto",
+    flexGrow: 0,
     height: "auto",
+    maxHeight: "100%",
   },
   container: {
-    borderRadius: 4,
+    borderRadius: 0,
     shadowOffset: { width: -8, height: 8 },
     shadowOpacity: 0.14,
     shadowRadius: 28,

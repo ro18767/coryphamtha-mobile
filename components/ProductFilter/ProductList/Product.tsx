@@ -8,6 +8,7 @@ import {
   useAppContext,
 } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -35,7 +36,7 @@ export default function Product({
   function addCartItem(product_id: number) {
     if (user == null) {
       setPopupVisible(false);
-      popupComponentName.current = 'PopupSignIn';
+      popupComponentName.current = "PopupSignIn";
       setPopupData({});
       setPopupVisible(true);
       return;
@@ -53,7 +54,7 @@ export default function Product({
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         updateCartItems(setCartItems);
 
         setPopupVisible(false);
@@ -61,13 +62,11 @@ export default function Product({
         setPopupData({});
         setPopupVisible(true);
       });
-
-
   }
   function addWishlistItemItem(product_id: number) {
     if (user == null) {
       setPopupVisible(false);
-      popupComponentName.current = 'PopupSignIn';
+      popupComponentName.current = "PopupSignIn";
       setPopupData({});
       setPopupVisible(true);
       return;
@@ -85,12 +84,15 @@ export default function Product({
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         updateWishlistItems(setWishlistItems);
-        
-        router.navigate("/favorite");
+
+        router.push("/favorite");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       });
-      
   }
 
   return (
@@ -102,6 +104,13 @@ export default function Product({
           },
           onPressIn: () => {
             setPressed(true);
+          },
+          onPress: () => {
+            router.push(`/products/${String(id)}`);
+            mainScrollViewRef.current?.scrollTo({
+              y: 0,
+              animated: false,
+            });
           },
           style: [styles.product_wrap, styles.product_border_radius],
         }}

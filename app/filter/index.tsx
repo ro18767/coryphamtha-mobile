@@ -26,7 +26,6 @@ export default function Index() {
   }>();
 
   const offsetDirty = Number.parseInt(offsetParam ?? "") || 0;
-  console.log(offsetDirty);
 
   const offset = Math.max(
     0,
@@ -67,7 +66,6 @@ export default function Index() {
     });
   }
 
-  console.log({ min, max });
 
   const filtered_products = products.filter((p) => {
     if (p.price >= min) {

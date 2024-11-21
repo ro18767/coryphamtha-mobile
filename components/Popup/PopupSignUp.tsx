@@ -32,9 +32,6 @@ export default function PopupSignUp() {
   const [serverPhoneVerificationCode, setServerPhoneVerificationCode] =
     useState<string>();
 
-  useEffect(() => {
-    console.log(serverPhoneVerificationCode);
-  }, [serverPhoneVerificationCode]);
 
   function register() {
     const code = Math.floor(Math.random() * 100000).toString();
@@ -50,7 +47,7 @@ export default function PopupSignUp() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       });
 
     setServerPhoneVerificationCode(code);
@@ -75,15 +72,30 @@ export default function PopupSignUp() {
       .then((data) => {
         if (data.status === "Invalid verification code") return;
         setPopupVisible(false);
-        popupComponentName.current = 'PopupSignIn';
+        popupComponentName.current = "PopupSignIn";
         setPopupData({});
         setPopupVisible(true);
-        console.log(data);
+        // console.log(data);
       });
   }
 
   return (
     <>
+      <ViewButton
+        pressableProps={{
+          style: {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            opacity: 0.2,
+          },
+          onPress: () => {
+            setPopupVisible(false);
+          },
+        }}
+      />
       <View style={styles.backdrop} />
       <ThemedView style={styles.container} colorName="surface_background">
         <ThemedText
@@ -148,7 +160,7 @@ export default function PopupSignUp() {
               pressableProps={{
                 onPress: () => {
                   setPopupVisible(false);
-                  popupComponentName.current = 'PopupSignIn';
+                  popupComponentName.current = "PopupSignIn";
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -216,7 +228,7 @@ export default function PopupSignUp() {
               pressableProps={{
                 onPress: () => {
                   setPopupVisible(false);
-                  popupComponentName.current = 'PopupSignIn';
+                  popupComponentName.current = "PopupSignIn";
                   setPopupData({});
                   setPopupVisible(true);
                 },
@@ -312,6 +324,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "#000000",
     opacity: 0.2,
+    pointerEvents: "none",
   },
   container: {
     position: "absolute",

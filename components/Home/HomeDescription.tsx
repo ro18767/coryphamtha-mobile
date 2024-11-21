@@ -7,6 +7,7 @@ import TextButton from "@/components/buttons/TextButton";
 import { useEffect, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
+import { usePopoverContext } from "@/context/PopoverContext";
 
 export default function HomeDescription() {
   const backgroundColor = useThemeColor(
@@ -16,6 +17,11 @@ export default function HomeDescription() {
     },
     "none"
   );
+  const popoverContext = usePopoverContext();
+
+  if (!popoverContext) return;
+  const { popoverComponentName, setPopoverData, setPopoverVisible } =
+    popoverContext;
   return (
     <View
       style={[
@@ -41,7 +47,7 @@ export default function HomeDescription() {
             colorName="secondary_text"
             style={[styles.image_text, styles.image_logo_text]}
           >
-            « BOTANICA »
+            « CORYPHAM »
           </ThemedText>
         </View>
         <ThemedText
@@ -55,7 +61,9 @@ export default function HomeDescription() {
       <TextButton
         pressableProps={{
           onPress: () => {
-            console.log("test");
+            popoverComponentName.current = "PopupCategory";
+            setPopoverData({});
+            setPopoverVisible(true);
           },
         }}
         conteinerProps={{
@@ -112,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     columnGap: 8,
+    justifyContent: "center",
   },
   button: {
     paddingHorizontal: 12,
