@@ -47,6 +47,7 @@ export default function IconButton({
               width: "auto",
               height: "auto",
               backgroundColor: "rgb(0, 0, 0)",
+              pointerEvents: "none",
             },
             underlayProps?.style,
           ]}

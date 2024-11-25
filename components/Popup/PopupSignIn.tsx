@@ -17,13 +17,8 @@ export default function PopupSignIn() {
   if (!popupContext) return;
 
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
-  const borderColor = useThemeColor(
-    {
-      light: "#D9D9D9",
-      dark: "#D9D9D9",
-    },
-    "surface_outline_background"
-  );
+  const borderColor = useThemeColor({}, "surface_text");
+  const backgroundColor = useThemeColor({}, "surface_background");
   const color = useThemeColor({}, "surface_text");
   const [phone, onChangePhone] = useState("+380");
   const [confirmCode, onChangeConfirmCode] = useState("");
@@ -77,7 +72,7 @@ export default function PopupSignIn() {
             right: 0,
             left: 0,
             bottom: 0,
-            opacity: 0.2
+            opacity: 0.2,
           },
           onPress: () => {
             setPopupVisible(false);
@@ -111,7 +106,8 @@ export default function PopupSignIn() {
                   styles.container__input,
                 ]}
                 onChangeText={onChangePhone}
-                value={phone}
+                defaultValue={phone}
+                key="phone"
                 placeholder=""
                 keyboardType="phone-pad"
                 inputMode="tel"
@@ -176,11 +172,13 @@ export default function PopupSignIn() {
                   {
                     color,
                     borderColor,
+                    backgroundColor,
                   },
                   styles.container__input,
                 ]}
                 onChangeText={onChangeConfirmCode}
-                value={confirmCode}
+                defaultValue={confirmCode}
+                key="confirmCode"
                 placeholder=""
                 keyboardType="number-pad"
                 inputMode="numeric"
@@ -277,6 +275,9 @@ const styles = StyleSheet.create({
     rowGap: 16,
     paddingHorizontal: 40,
     paddingVertical: 32,
+    maxWidth: 500,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   container__header: {
     fontWeight: 500,

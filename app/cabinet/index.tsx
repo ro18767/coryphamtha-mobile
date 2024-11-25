@@ -75,7 +75,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangeFname}
-            value={fname}
+            defaultValue={fname}
+            key="fname"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -100,7 +101,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangeLname}
-            value={lname}
+            defaultValue={lname}
+            key="lname"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -125,7 +127,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangePhone}
-            value={phone}
+            defaultValue={phone}
+            key="phone"
             placeholder=""
             keyboardType="phone-pad"
             inputMode="tel"
@@ -150,7 +153,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangeEmail}
-            value={email}
+            defaultValue={email}
+            key="email"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -175,7 +179,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangeCity}
-            value={city}
+            defaultValue={city}
+            key="city"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -200,7 +205,8 @@ export default function CartPage() {
               styles.container__input,
             ]}
             onChangeText={onChangePostOffice}
-            value={postOffice}
+            defaultValue={postOffice}
+            key="postOffice"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -228,7 +234,8 @@ export default function CartPage() {
               styles.container__input_textarea,
             ]}
             onChangeText={onChangeComment}
-            value={comment}
+            defaultValue={comment}
+            key="comment"
             placeholder=""
             keyboardType="default"
             inputMode="text"

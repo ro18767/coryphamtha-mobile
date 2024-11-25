@@ -40,7 +40,7 @@ export default function TextButton({
           {...underlayProps}
           style={[
             {
-                 position: "absolute",
+              position: "absolute",
               top: 0,
               left: 0,
               right: 0,
@@ -48,6 +48,7 @@ export default function TextButton({
               width: "auto",
               height: "auto",
               backgroundColor: "rgb(0, 0, 0)",
+              pointerEvents: "none",
             },
             underlayProps?.style,
           ]}

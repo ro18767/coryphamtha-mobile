@@ -48,6 +48,7 @@ export default function ViewButton({
               width: "auto",
               height: "auto",
               backgroundColor: "rgb(0, 0, 0)",
+              pointerEvents: "none",
             },
             underlayProps?.style,
           ]}

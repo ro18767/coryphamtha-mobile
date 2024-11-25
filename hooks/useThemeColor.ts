@@ -5,14 +5,17 @@
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-import { Colors } from '@/constants/Colors';
+import { Colors } from "@/constants/Colors";
+import { useMemo } from "react";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark,
 ) {
-  const theme = useColorScheme() ?? 'light';
-  const colorFromProps = props[theme];
+  
+  const theme = useColorScheme() ?? "light";
+  const colorFromProps = useMemo(() => props[theme], [theme]);
+  // if(useColorScheme() === 'light') console.error('light');
 
   if (colorFromProps) {
     return colorFromProps;

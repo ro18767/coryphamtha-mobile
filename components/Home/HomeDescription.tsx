@@ -47,7 +47,7 @@ export default function HomeDescription() {
             colorName="secondary_text"
             style={[styles.image_text, styles.image_logo_text]}
           >
-            « CORYPHAM »
+            « CORY »
           </ThemedText>
         </View>
         <ThemedText

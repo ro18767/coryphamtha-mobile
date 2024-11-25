@@ -27,7 +27,8 @@ export default function EmailSubscribe() {
               styles.container__form__email_input,
             ]}
             onChangeText={onChangeText}
-            value={text}
+            defaultValue={text}
+            key="text"
             placeholder="Ваш e-mail"
             keyboardType="email-address"
             inputMode="email"
@@ -54,9 +55,10 @@ export default function EmailSubscribe() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: "auto",
     paddingHorizontal: 24,
     paddingVertical: 36,
-    rowGap: 22
+    rowGap: 22,
   },
   container__header: {
     fontWeight: 700,

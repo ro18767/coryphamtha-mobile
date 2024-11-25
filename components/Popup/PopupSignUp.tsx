@@ -16,13 +16,9 @@ export default function PopupSignUp() {
   if (!popupContext) return;
 
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
-  const borderColor = useThemeColor(
-    {
-      light: "#D9D9D9",
-      dark: "#D9D9D9",
-    },
-    "surface_outline_background"
-  );
+
+  const borderColor = useThemeColor({}, "surface_text");
+  const backgroundColor = useThemeColor({}, "surface_background");
   const color = useThemeColor({}, "surface_text");
   const [phone, onChangePhone] = useState("+380");
   const [confirmCode, onChangeConfirmCode] = useState("");
@@ -31,7 +27,6 @@ export default function PopupSignUp() {
 
   const [serverPhoneVerificationCode, setServerPhoneVerificationCode] =
     useState<string>();
-
 
   function register() {
     const code = Math.floor(Math.random() * 100000).toString();
@@ -118,11 +113,13 @@ export default function PopupSignUp() {
                   {
                     color,
                     borderColor,
+                    backgroundColor,
                   },
                   styles.container__input,
                 ]}
                 onChangeText={onChangePhone}
-                value={phone}
+                defaultValue={phone}
+                key="phone"
                 placeholder=""
                 keyboardType="phone-pad"
                 inputMode="tel"
@@ -195,7 +192,8 @@ export default function PopupSignUp() {
                   styles.container__input,
                 ]}
                 onChangeText={onChangeConfirmCode}
-                value={confirmCode}
+                defaultValue={confirmCode}
+                key="confirmCode"
                 placeholder=""
                 keyboardType="number-pad"
                 inputMode="numeric"
@@ -275,8 +273,8 @@ function CheckBox({
   onEULA: (val: boolean) => void;
 }) {
   const borderColor = useThemeColor({}, "secondary_outline_text");
-  const checkColor = useThemeColor({}, "secondary_outline_background");
-  const backgroundColor = useThemeColor({}, "secondary_outline_text");
+  const checkColor = useThemeColor({}, "secondary_outline_text");
+  const backgroundColor = useThemeColor({}, "none");
   return (
     <ViewButton
       pressableProps={{
@@ -286,7 +284,7 @@ function CheckBox({
         },
       }}
       conteinerProps={{
-        colorName: "secondary_outline_background",
+        colorName: "none",
         style: styles.container__form__checkbox_wrap,
       }}
     >
@@ -339,6 +337,9 @@ const styles = StyleSheet.create({
     rowGap: 16,
     paddingHorizontal: 40,
     paddingVertical: 32,
+    maxWidth: 500,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   container__header: {
     fontWeight: 500,

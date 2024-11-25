@@ -17,21 +17,40 @@ export default function ProductList({
 }) {
   return (
     <ThemedView style={styles.product_list} colorName="surface_background">
-      {products.map((v, i) => {
-        let title = v.title;
-        let price = v.price;
-        let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;
-        let id = v.id;
-        return (
-          <Product
-            key={i}
-            id={id}
-            title={title}
-            price={price}
-            imageUrl={image_link}
-          />
-        );
-      })}
+      {(() => {
+        let counter = 0;
+        let counterLimit = 0;
+        return products
+          .filter(() => {
+            try {
+              if (offset > counter) return false;
+              try {
+                if (limit <= counterLimit) return false;
+              } finally {
+                counterLimit += 1;
+              }
+            } finally {
+              counter += 1;
+            }
+
+            return true;
+          })
+          .map((v, i) => {
+            let title = v.title;
+            let price = v.price;
+            let image_link = v.iamge_link ? `${URL_BASE}${v.iamge_link}` : null;
+            let id = v.id;
+            return (
+              <Product
+                key={i}
+                id={id}
+                title={title}
+                price={price}
+                imageUrl={image_link}
+              />
+            );
+          });
+      })()}
     </ThemedView>
   );
 }
@@ -43,7 +62,11 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "flex-start",
     rowGap: 24,
+    width: "100%",
     marginHorizontal: -8,
     paddingHorizontal: 24,
+    maxWidth: 1000,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });

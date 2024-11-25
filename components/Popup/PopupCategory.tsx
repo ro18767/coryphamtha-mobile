@@ -22,6 +22,7 @@ import { usePopoverContext } from "@/context/PopoverContext";
 import { Link, router } from "expo-router";
 import { useAppContext } from "@/context/AppProvider";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
+import { URL_BASE } from "@/constants/glabals";
 type ProductCategory = {
   title: string;
   link: string;
@@ -83,7 +84,13 @@ export default function PopupCategory() {
             bottom: 0,
             opacity: 0.2,
           },
-          onPress: () => {
+          onPressIn: (event) =>{
+
+            console.log('====================================');
+            console.log(event);
+            console.log('====================================');
+          },
+          onPress: (event) => {
             setPopoverVisible(false);
           },
         }}
@@ -101,6 +108,46 @@ export default function PopupCategory() {
             style={styles.container}
             colorName="secondary_outline_background"
           >
+            {
+              <ViewButton
+                conteinerProps={{
+                  style: styles.link_row_wrap,
+                  colorName: "secondary_outline_background",
+                }}
+                pressableProps={{
+                  onPress: () => {
+                    setPopoverVisible(false);
+                    router.navigate(`/filter`);
+                    router.navigate({
+                      pathname: `/filter`,
+                      params:{
+                        limit: `${0}`,
+                        offset: `${0}`,
+                      }
+                    });
+                    mainScrollViewRef.current?.scrollTo({
+                      y: 0,
+                      animated: false,
+                    });
+                  },
+                }}
+              >
+                <View style={[styles.link_row]}>
+                  <View style={[styles.icon_wrap]}>
+                    <Image
+                      source={`${URL_BASE}${"/assets/icons/new.png"}`}
+                      style={[styles.icon]}
+                    />
+                  </View>
+                  <ThemedText
+                    style={styles.link_text}
+                    colorName="secondary_outline_text"
+                  >
+                    {"NEW"}
+                  </ThemedText>
+                </View>
+              </ViewButton>
+            }
             {item_list_data.map((item_data, i) => {
               return (
                 <PopupCategoryItem
@@ -138,17 +185,24 @@ function PopupCategoryItem({
   const { category_item, children } = item_data;
 
   let item = null;
-  let link = "/";
-  let params = {};
+  let link = "/(home)";
+  let params = {
+    limit: `${0}`,
+    offset: `${0}`,
+  };
   if (category_item) {
     item = category_item;
     link = `/filter`;
     params = {
       category: `${item.id}`,
+      limit: `${0}`,
+      offset: `${0}`,
     };
   }
   if (item == null) return;
-  const { title, source } = item;
+
+  const { title, image_link: source } = item;
+
   const opened = useMemo(() => {
     return openCatArr[level] === item;
   }, [openCatArr]);
@@ -172,7 +226,7 @@ function PopupCategoryItem({
         >
           <View style={[styles.link_row]}>
             <View style={[styles.icon_wrap]}>
-              <Image source={source} style={[styles.icon]} />
+              <Image source={`${URL_BASE}${source}`} style={[styles.icon]} />
             </View>
             <ThemedText
               style={styles.link_text}
@@ -197,8 +251,10 @@ function PopupCategoryItem({
           pressableProps={{
             onPress: () => {
               setPopoverVisible(false);
-              router.push(link);
-              router.setParams(params);
+              router.navigate({
+                pathname: link,
+                params:params
+              });
               mainScrollViewRef.current?.scrollTo({
                 y: 0,
                 animated: false,
@@ -208,7 +264,7 @@ function PopupCategoryItem({
         >
           <View style={[styles.link_row]}>
             <View style={[styles.icon_wrap]}>
-              <Image source={source} style={[styles.icon]} />
+              <Image source={`${URL_BASE}${source}`} style={[styles.icon]} />
             </View>
             <ThemedText
               style={styles.link_text}
@@ -255,7 +311,8 @@ const styles = StyleSheet.create({
     right: 0,
     left: 0,
     bottom: 0,
-    pointerEvents: "none",
+    maxWidth: 500,
+    marginRight: 'auto',
   },
   scroll_container: {
     pointerEvents: "auto",
@@ -293,7 +350,10 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-  icon: {},
+  icon: {
+    width: 30,
+    height: 30,
+  },
   fold_icon_wrap: {
     width: 24,
     height: 24,

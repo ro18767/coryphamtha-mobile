@@ -92,6 +92,10 @@ const styles = StyleSheet.create({
     shadowRadius: 28,
     rowGap: 16,
     overflow: "hidden",
+
+    maxWidth: 500,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   container__header: {
     fontWeight: 500,

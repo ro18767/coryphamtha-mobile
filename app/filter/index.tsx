@@ -17,12 +17,14 @@ export default function Index() {
     category: categoryParam,
     min: minParam,
     max: maxParam,
+    availability: availabilityParam,
   } = useLocalSearchParams<{
     offset: string;
     limit: string;
     category: string;
     min: string;
     max: string;
+    availability: string[];
   }>();
 
   const offsetDirty = Number.parseInt(offsetParam ?? "") || 0;
@@ -44,9 +46,12 @@ export default function Index() {
   const max = maxDirty || Infinity;
 
   const categoryDirty = Math.floor(Number.parseInt(categoryParam ?? ""));
-  const category_id = categoryDirty || 0;
+  const category_id = (categoryDirty > 0 ? categoryDirty : 0) || 0;
 
   const selected_category = categories.find((c) => +c.id === category_id);
+  const availability = Array.isArray(availabilityParam)
+    ? availabilityParam.map((v) => +v).filter((v) => v === v)
+    : [];
 
   const selected_categories = [];
   if (selected_category) {
@@ -66,7 +71,6 @@ export default function Index() {
     });
   }
 
-
   const filtered_products = products.filter((p) => {
     if (p.price >= min) {
     } else {
@@ -82,12 +86,20 @@ export default function Index() {
         return false;
       }
     }
+
+    if (availability.length) {
+      if (availability.includes(+p.availability)) {
+      } else {
+        return false;
+      }
+    }
+
     return true;
   });
 
   return (
     <>
-      <Filter selected_category={selected_category}/>
+      <Filter selected_category={selected_category} />
       <ProductList
         products={filtered_products}
         offset={offset}

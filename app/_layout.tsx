@@ -59,8 +59,8 @@ export default function RootLayout({ children }: any) {
 
 function Children({ children }: any) {
   const popupContext = usePopupContext();
-  if (!popupContext) return;
   const popoverContext = usePopoverContext();
+  if (!popupContext) return;
   if (!popoverContext) return;
 
   const { popupVisible, popupData, popupComponentName } = popupContext;

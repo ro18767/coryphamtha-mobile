@@ -66,7 +66,8 @@ export default function PopupBuy({ data: { successCallback } = {} }: any) {
               styles.container__input,
             ]}
             onChangeText={onChangePhone}
-            value={phone}
+            defaultValue={phone}
+            key="phone"
             placeholder=""
             keyboardType="phone-pad"
             inputMode="tel"
@@ -140,6 +141,9 @@ const styles = StyleSheet.create({
     rowGap: 16,
     paddingHorizontal: 40,
     paddingVertical: 32,
+    maxWidth: 500,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   container__header: {
     fontWeight: 500,

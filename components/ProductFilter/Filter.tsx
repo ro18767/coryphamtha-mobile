@@ -4,18 +4,39 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import IconButton from "@/components/buttons/IconButton";
 import TextButton from "@/components/buttons/TextButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
 import { useAppContext } from "@/context/AppProvider";
 
-function FilterTag({ v }: { v: any }) {
-  const [checked, setChecked] = useState(false);
+function FilterTagSpetial({ vc, v }: { v: any }) {
+  const sp = useLocalSearchParams();
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const checkColor = useThemeColor({}, "secondary_outline_background");
   const backgroundColor = useThemeColor({}, "secondary_outline_text");
 
+  const checkStyle = useMemo(
+    () => ({ backgroundColor: checkColor }),
+    [checkColor]
+  );
+
+  const checked = useMemo(() => {
+    const ssssss = Array.isArray(sp[vc.key]) ? sp[vc.key] : [];
+    return ssssss.includes(v.val);
+  }, [vc, v, sp[vc.key]]);
+
+  function setChecked(newchecked: boolean) {
+    const ssssss = Array.isArray(sp[vc.key]) ? sp[vc.key] : [];
+    if (newchecked) {
+      if (ssssss.includes(v.val)) return;
+      router.setParams({ [vc.key]: [...(sp[vc.key] ?? []), v.val] });
+      return;
+    }
+    const new_afdghj = ssssss.filter((ssssdfasdsd) => ssssdfasdsd !== v.val);
+
+    router.setParams({ [vc.key]: new_afdghj });
+  }
   return (
     <ViewButton
       pressableProps={{
@@ -24,8 +45,12 @@ function FilterTag({ v }: { v: any }) {
         },
       }}
       conteinerProps={{
-        colorName: "secondary_outline_background",
         style: styles.filter__tag_filter_wrap,
+      }}
+      underlayProps={{
+        style: {
+          opacity: 0.15,
+        },
       }}
     >
       <View
@@ -37,7 +62,7 @@ function FilterTag({ v }: { v: any }) {
       >
         <View
           style={[
-            { backgroundColor: checkColor },
+            checkStyle,
             checked ? undefined : { display: "none" },
             styles.filter__tag_option_input_check,
           ]}
@@ -53,39 +78,164 @@ function FilterTag({ v }: { v: any }) {
   );
 }
 
-function FilterTags({ showFilter }: { showFilter: number }) {
-  const [min, onChnageMin] = useState("");
-  const [max, onChnageMax] = useState("");
+function FilterTagCategorySpetial({ vc, sdfgh }) {
+  const { filterTags } = useAppContext();
+
+  return (
+    <View style={styles.filter__tag_wrap}>
+      <ThemedText
+        colorName="secondary_outline_text"
+        style={styles.filter__tag_label}
+      >
+        {vc.title}
+      </ThemedText>
+      <View style={styles.filter__tag_mini_list_wrap}>
+        {sdfgh.map((v, i) => (
+          <FilterTagSpetial vc={vc} v={v} key={i} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function FilterTag({ vc, v }: { v: any }) {
+  const sp = useLocalSearchParams();
+
+  const key = "c";
+  const val = `${vc.id}-${v.id}`;
+
+  const borderColor = useThemeColor({}, "secondary_outline_text");
+  const checkColor = useThemeColor({}, "secondary_outline_background");
+  const backgroundColor = useThemeColor({}, "secondary_outline_text");
+
+  const checkStyle = useMemo(
+    () => ({ backgroundColor: checkColor }),
+    [checkColor]
+  );
+
+  const checked = useMemo(() => {
+    const ssssss = Array.isArray(sp[key]) ? sp[key] : [];
+    return ssssss.includes(val);
+  }, [vc, v, sp[key]]);
+
+  function setChecked(newchecked: boolean) {
+    const ssssss = Array.isArray(sp[key]) ? sp[key] : [];
+    if (newchecked) {
+      if (ssssss.includes(val)) return;
+      router.setParams({ [key]: [...(sp[key] ?? []), val] });
+      return;
+    }
+    const new_afdghj = ssssss.filter((ssssdfasdsd) => ssssdfasdsd !== val);
+
+    router.setParams({ [key]: new_afdghj });
+  }
+
+  return (
+    <ViewButton
+      pressableProps={{
+        onPress: () => {
+          setChecked(!checked);
+        },
+      }}
+      conteinerProps={{
+        style: styles.filter__tag_filter_wrap,
+      }}
+      underlayProps={{
+        style: {
+          opacity: 0.15,
+        },
+      }}
+    >
+      <View
+        style={[
+          { borderColor },
+          checked ? { backgroundColor } : undefined,
+          styles.filter__tag_option_input,
+        ]}
+      >
+        <View
+          style={[
+            checkStyle,
+            checked ? undefined : { display: "none" },
+            styles.filter__tag_option_input_check,
+          ]}
+        />
+      </View>
+      <ThemedText
+        colorName="surface_text"
+        style={styles.filter__tag_option_label}
+      >
+        {v.title}
+      </ThemedText>
+    </ViewButton>
+  );
+}
+
+function FilterTagCategory({ vc, i }) {
+  const { filterTags } = useAppContext();
+
+  const sdfgh = useMemo(
+    () =>
+      filterTags.filter((v) => +v.product_filter_tag_category_id === +vc.id),
+    [filterTags]
+  );
+  return (
+    <View style={styles.filter__tag_wrap}>
+      <ThemedText
+        colorName="secondary_outline_text"
+        style={styles.filter__tag_label}
+      >
+        {vc.title}
+      </ThemedText>
+      <View style={styles.filter__tag_mini_list_wrap}>
+        {sdfgh.map((v, i) => (
+          <FilterTag vc={vc} v={v} key={i} />
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function FilterTags() {
+  const {
+    showFilter: showFilterParam,
+    min: minParam,
+    max: maxParam,
+  } = useLocalSearchParams<{
+    showFilter: string;
+    min: string;
+    max: string;
+  }>();
+  const showFilter = Number.parseInt(showFilterParam ?? "") || 0;
+
+  const { filterTagCategories } = useAppContext();
+  const minStart = useMemo(() => minParam ?? "", []);
+  const maxStart = useMemo(() => maxParam ?? "", []);
+  const [min, onChnageMin] = useState(minStart);
+  const [max, onChnageMax] = useState(maxStart);
 
   const [isFirstRender, setFirstRender] = useState(true);
 
-  const { filterTagCategories, filterTags } = useAppContext();
-
   // // const { filterTagCategories, filterTags } = useAppContext();
 
-  // useEffect(() => {
-  //   if (isFirstRender) return;
-  //   // router.setParams({ min });
-  // }, [min]);
-  // useEffect(() => {
-  //   if (isFirstRender) return;
-  //   // router.setParams({ max });
-  // }, [max]);
+  useEffect(() => {
+    if (isFirstRender) return;
+    router.setParams({ min });
+  }, [min]);
+  useEffect(() => {
+    if (isFirstRender) return;
+    router.setParams({ max });
+  }, [max]);
 
-  // useEffect(() => {
-  //   // setTimeout(() => setFirstRender(false), 0);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => setFirstRender(false), 0);
+  }, []);
 
   const color = useThemeColor({}, "surface_text");
-  const borderColor = useThemeColor(
-    {
-      light: "#D9D9D9",
-      dark: "#D9D9D9",
-    },
-    "surface_outline_background"
-  );
+  const borderColor = useThemeColor({}, "surface_outline_background");
   // console.log({ filterTagCategories });
-// 
+  //
+  if (!showFilter) return null;
   return (
     <ThemedView
       style={styles.filter__popup}
@@ -125,6 +275,8 @@ function FilterTags({ showFilter }: { showFilter: number }) {
               },
               styles.filter__price_wrap__input,
             ]}
+            defaultValue={minStart}
+            key="minStart"
             onChangeText={onChnageMin}
             placeholder="Від"
             keyboardType="numeric"
@@ -138,6 +290,8 @@ function FilterTags({ showFilter }: { showFilter: number }) {
               },
               styles.filter__price_wrap__input,
             ]}
+            defaultValue={maxStart}
+            key="maxStart"
             onChangeText={onChnageMax}
             placeholder="До"
             keyboardType="numeric"
@@ -146,36 +300,40 @@ function FilterTags({ showFilter }: { showFilter: number }) {
         </View>
       </View>
       <View style={styles.filter__tag_list_wrap}>
+        <FilterTagCategorySpetial
+          vc={{ title: "Наявність", key: "availability" }}
+          sdfgh={[
+            {
+              title: "Є в наявності",
+              val: "3",
+            },
+            {
+              title: "Закінчується",
+              val: "2",
+            },
+            {
+              title: "Тимчасово немає",
+              val: "1",
+            },
+            {
+              title: "Немає в наявності",
+              val: "0",
+            },
+          ]}
+        />
         {filterTagCategories.map((vc, i) => {
-          return (
-            <View key={i} style={styles.filter__tag_wrap}>
-              <ThemedText
-                colorName="secondary_outline_text"
-                style={styles.filter__tag_label}
-              >
-                {vc.title}
-              </ThemedText>
-              <View style={styles.filter__tag_mini_list_wrap}>
-                {filterTags
-                  .filter((v) => +v.product_filter_tag_category_id === +vc.id)
-                  .map((v, i) => (
-                    <FilterTag v={v} key={i} />
-                  ))}
-              </View>
-            </View>
-          );
+          return <FilterTagCategory key={i} vc={vc} i={i} />;
         })}
       </View>
     </ThemedView>
   );
 }
 
-export default function Filter({selected_category}) {
+export default function Filter({ selected_category }) {
   const { showFilter: showFilterParam } = useLocalSearchParams<{
     showFilter: string;
   }>();
   const showFilter = Number.parseInt(showFilterParam ?? "") || 0;
-
   return (
     <ThemedView style={styles.filter} colorName="surface_background">
       <ThemedText colorName="primary_outline_text" style={styles.filter__title}>
@@ -199,16 +357,7 @@ export default function Filter({selected_category}) {
           source: require("@/assets/images/icons/filter-options-icon.png"),
         }}
       />
-      <View
-        style={[
-          {
-            display: showFilter ? "flex" : "none",
-          },
-          styles.filter__popup_wrap,
-        ]}
-      >
-        <FilterTags showFilter={showFilter} />
-      </View>
+      <FilterTags />
     </ThemedView>
   );
 }
@@ -221,6 +370,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 24,
     zIndex: 1,
+    position: "relative",
+    height: "auto",
   },
   filter__title: {
     lineHeight: 36,
@@ -245,13 +396,12 @@ const styles = StyleSheet.create({
     height: 24,
     objectFit: "contain",
   },
-  filter__popup_wrap: {
+  filter__popup: {
     position: "absolute",
-    top: "100%",
+    top: 80,
     left: 20,
     right: 20,
-  },
-  filter__popup: {
+    marginLeft: "auto",
     paddingHorizontal: 32,
     paddingVertical: 40,
     borderRadius: 8,
@@ -259,6 +409,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.14,
     shadowRadius: 28,
     rowGap: 24,
+    maxWidth: 500,
+    flexShrink: 0,
+    flexGrow: 1,
+    pointerEvents: "auto",
   },
   filter__price_wrap: {
     rowGap: 16,
@@ -317,14 +471,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   filter__tag_option_input_check: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    margin: "auto",
-    width: "50%",
-    height: "50%",
+    top: 5,
+    left: 5,
+    width: 8,
+    height: 8,
     borderRadius: 9999,
   },
   filter__popup_close_button_icon: {

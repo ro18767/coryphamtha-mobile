@@ -54,5 +54,8 @@ const styles = StyleSheet.create({
     rowGap: 24,
     marginHorizontal: -8,
     paddingHorizontal: 24,
+    maxWidth: 1000,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 });

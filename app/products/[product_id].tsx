@@ -10,6 +10,8 @@ import { usePopupContext } from "@/context/PopupContext";
 import { usePopoverContext } from "@/context/PopoverContext";
 import IconButton from "@/components/buttons/IconButton";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
+import { useAppContext } from "@/context/AppProvider";
+import { URL_BASE } from "@/constants/glabals";
 
 export default function ProductPage() {
   return (
@@ -24,31 +26,45 @@ export function ProductDisplay() {
   const { product_id } = useLocalSearchParams<{
     product_id: string;
   }>();
+
+  const borderColor = useThemeColor({}, "secondary_outline_text");
+  const backgroundColor = useThemeColor({}, "secondary_outline_text");
+
   const popoverContext = usePopoverContext();
-  if (!popoverContext) return;
   const popupContext = usePopupContext();
+
+  const { products } = useAppContext();
+
+  const [showThankYouPopover, setShowThankYouPopover] = useState(false);
+
+  const product = products.find((p) => +p.id === +product_id);
+
+  if (!popoverContext) return;
   if (!popupContext) return;
 
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { popoverComponentName, setPopoverData, setPopoverVisible } =
     popoverContext;
 
-  const [showThankYouPopover, setShowThankYouPopover] = useState(false);
+  if (product == null) return;
 
-  const borderColor = useThemeColor({}, "secondary_outline_text");
-  const backgroundColor = useThemeColor({}, "secondary_outline_text");
-  const title = "Бантик оксамитовий сірий";
-  const product_code = "111156";
-  const najavnist = "Є в наявності";
-  const price = "268";
-  const description =
-    "Бантик оксамитовий сірий 23 х 25 см, вроблений з матеріалу вельвет у магазині Ботаніка по кращій ціні. \nВеликий асортимент товарів у категорії Бантики з доставкою по Україні.";
+  const { id, title, price, availability, description, vendor_code } = product;
+
+  const image_link = product.iamge_link
+    ? `${URL_BASE}${product.iamge_link}`
+    : null;
+  const product_code = vendor_code;
+
+  let najavnist = "Немає в наявності";
+  if (+availability === 1) najavnist = "Тимчасово немає";
+  if (+availability === 2) najavnist = "Закінчується";
+  if (+availability === 3) najavnist = "Є в наявності";
+
   const tag_array: [string, string][] = [
     ["Колір", "Сірий"],
     ["Матеріал", "Вельвет"],
     ["Подія", "Новий рік"],
   ];
-
   return (
     <>
       <ThemedView style={styles.main_wrap} colorName="surface_background">
@@ -69,7 +85,9 @@ export function ProductDisplay() {
         <View style={styles.product_img_wrap}>
           <Image
             style={styles.product__preview__img}
-            source={require("@/assets/images/example/image 58.png")}
+            source={{
+              uri: image_link,
+            }}
             // source={{
             //   uri: imageUrl.toString(),
             // }}
@@ -91,7 +109,7 @@ export function ProductDisplay() {
               }}
               pressableProps={{
                 onPress: () => {
-                  router.push("/return_polisy");
+                  router.navigate("/return_polisy");
                   mainScrollViewRef.current?.scrollTo({
                     y: 0,
                     animated: false,
@@ -121,7 +139,7 @@ export function ProductDisplay() {
               }}
               pressableProps={{
                 onPress: () => {
-                  router.push("/payments");
+                  router.navigate("/payments");
                   mainScrollViewRef.current?.scrollTo({
                     y: 0,
                     animated: false,
@@ -151,7 +169,7 @@ export function ProductDisplay() {
               }}
               pressableProps={{
                 onPress: () => {
-                  router.push("/delivery_across_ukraine");
+                  router.navigate("/delivery_across_ukraine");
                   mainScrollViewRef.current?.scrollTo({
                     y: 0,
                     animated: false,
@@ -229,88 +247,91 @@ export function ProductDisplay() {
             </View>
           </View>
           <View style={styles.container__form__submit_button_block_wrap}>
-            <TextButton
-              underlayProps={{
-                style: styles.container__form__submit_button_wrap,
-              }}
-              pressableProps={{
-                onPress: () => {},
-              }}
-              conteinerProps={{
-                style: styles.container__form__submit_button,
-                colorName: "primary_background",
-              }}
-              textProps={{
-                style: styles.container__form__submit_button_text,
-                colorName: "primary_text",
-              }}
+            <View
+              style={styles.container__form__submit_button_block_wrap_unwrap}
             >
-              КУПИТИ
-            </TextButton>
-            <TextButton
-              underlayProps={{
-                style: styles.container__form__submit_button_wrap,
-              }}
-              pressableProps={{
-                onPress: () => {
-                  setPopupVisible(false);
-                  popupComponentName.current = "PopupBuy";
-                  setPopupData({
-                    successCallback: () => {
-
-                      setShowThankYouPopover(true);
-                    },
-                  });
-                  setPopupVisible(true);
-                },
-              }}
-              conteinerProps={{
-                style: [
-                  styles.container__form__submit_button,
-                  {
-                    borderColor,
-                    borderWidth: 1,
-                  },
-                ],
-                colorName: "secondary_outline_background",
-              }}
-              textProps={{
-                style: styles.container__form__submit_button_text,
-                colorName: "secondary_outline_text",
-              }}
-            >
-              ШВИДКА ПОКУПКА
-            </TextButton>
-            {showThankYouPopover ? (
-              <ThemedView
-                style={styles.filter__popup_container}
-                colorName="secondary_outline_background"
+              <TextButton
+                underlayProps={{
+                  style: styles.container__form__submit_button_wrap,
+                }}
+                pressableProps={{
+                  onPress: () => {},
+                }}
+                conteinerProps={{
+                  style: styles.container__form__submit_button,
+                  colorName: "primary_background",
+                }}
+                textProps={{
+                  style: styles.container__form__submit_button_text,
+                  colorName: "primary_text",
+                }}
               >
-                <ThemedText
-                  style={[styles.filter__popup__text]}
-                  colorName="surface_text"
-                >
-                  Дякуємо за замовлення! Менеджер скоро зв'яжеться з вами.
-                </ThemedText>
-                <IconButton
-                  pressableProps={{
-                    style: [styles.filter__popup_close_button_icon],
-                    onPress: () => {
-                      setShowThankYouPopover(false);
+                КУПИТИ
+              </TextButton>
+              <TextButton
+                underlayProps={{
+                  style: styles.container__form__submit_button_wrap,
+                }}
+                pressableProps={{
+                  onPress: () => {
+                    setPopupVisible(false);
+                    popupComponentName.current = "PopupBuy";
+                    setPopupData({
+                      successCallback: () => {
+                        setShowThankYouPopover(true);
+                      },
+                    });
+                    setPopupVisible(true);
+                  },
+                }}
+                conteinerProps={{
+                  style: [
+                    styles.container__form__submit_button,
+                    {
+                      borderColor,
+                      borderWidth: 1,
                     },
-                  }}
-                  conteinerProps={{
-                    style: styles.filter__popup_close_button__container,
-                    colorName: "surface_background",
-                  }}
-                  imageProps={{
-                    resizeMode: "contain",
-                    style: styles.filter__popup_close_button__image,
-                    source: require("@/assets/images/icons/close-filter-icon.png"),
-                  }}
-                />
-              </ThemedView>
-            ) : null}
+                  ],
+                  colorName: "secondary_outline_background",
+                }}
+                textProps={{
+                  style: styles.container__form__submit_button_text,
+                  colorName: "secondary_outline_text",
+                }}
+              >
+                ШВИДКА ПОКУПКА
+              </TextButton>
+              {showThankYouPopover ? (
+                <ThemedView
+                  style={styles.filter__popup_container}
+                  colorName="secondary_outline_background"
+                >
+                  <ThemedText
+                    style={[styles.filter__popup__text]}
+                    colorName="surface_text"
+                  >
+                    Дякуємо за замовлення! Менеджер скоро зв'яжеться з вами.
+                  </ThemedText>
+                  <IconButton
+                    pressableProps={{
+                      style: [styles.filter__popup_close_button_icon],
+                      onPress: () => {
+                        setShowThankYouPopover(false);
+                      },
+                    }}
+                    conteinerProps={{
+                      style: styles.filter__popup_close_button__container,
+                      colorName: "surface_background",
+                    }}
+                    imageProps={{
+                      resizeMode: "contain",
+                      style: styles.filter__popup_close_button__image,
+                      source: require("@/assets/images/icons/close-filter-icon.png"),
+                    }}
+                  />
+                </ThemedView>
+              ) : null}
+            </View>
           </View>
         </View>
       </ThemedView>
@@ -346,7 +367,10 @@ const styles = StyleSheet.create({
   },
   product_img_wrap: {
     width: "100%",
+    maxWidth: 500,
     aspectRatio: 1 / 1,
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   product__preview__img: {
     width: "100%",
@@ -361,6 +385,7 @@ const styles = StyleSheet.create({
   },
   container__form__submit_button_wrap: {
     borderRadius: 4,
+    marginVertical: 8,
   },
   container__form__submit_button: {
     fontWeight: 500,
@@ -369,6 +394,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 4,
+    marginVertical: 8,
   },
   container__form__submit_button_text: {
     textAlign: "center",
@@ -420,9 +446,14 @@ const styles = StyleSheet.create({
   },
   container__form__submit_button_block_wrap: {
     width: "80%",
+    marginLeft: "auto",
+    marginRight: "auto",
+    position: "relative",
+  },
+  container__form__submit_button_block_wrap_unwrap: {
+    width: "100%",
     alignSelf: "center",
-    gap: 16,
-    padding: 20,
+    margin: 4,
   },
   product_bottom_wrap: {
     gap: 16,

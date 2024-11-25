@@ -7,7 +7,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function Index() {
-
   return (
     <>
       <HomeDescription />
@@ -17,6 +16,4 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
-
-});
+const styles = StyleSheet.create({});

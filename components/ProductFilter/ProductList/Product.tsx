@@ -26,12 +26,13 @@ export default function Product({
   imageUrl?: string | URL | null;
 }) {
   const popupContext = usePopupContext();
-  if (!popupContext) return;
 
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { user, setCartItems, setWishlistItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
+
+  if (!popupContext) return;
 
   function addCartItem(product_id: number) {
     if (user == null) {
@@ -87,7 +88,7 @@ export default function Product({
         // console.log(data);
         updateWishlistItems(setWishlistItems);
 
-        router.push("/favorite");
+        router.navigate("/favorite");
         mainScrollViewRef.current?.scrollTo({
           y: 0,
           animated: false,
@@ -106,7 +107,7 @@ export default function Product({
             setPressed(true);
           },
           onPress: () => {
-            router.push(`/products/${String(id)}`);
+            router.navigate(`/products/${String(id)}`);
             mainScrollViewRef.current?.scrollTo({
               y: 0,
               animated: false,

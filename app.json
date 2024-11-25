@@ -1,26 +1,28 @@
 {
   "expo": {
-    "name": "coryphamth-amobile",
-    "slug": "coryphamth-amobile",
-    "version": "0.0.0",
+    "name": "coryphamtha",
+    "slug": "cory",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.coryphamthamobile"
+      "package": "com.anonymous.coryphamthamobile",
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "bundler": "metro",

@@ -26,14 +26,13 @@ export default function Product({
   imageUrl?: string | URL | null;
 }) {
   const popupContext = usePopupContext();
-  if (!popupContext) return;
 
   const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   const { user, setWishlistItems, setCartItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
-  console.log(imageUrl);
+  if (!popupContext) return;
 
   function deleteWishlistItem(WishlistItem_id: number) {
     fetch(`${URL_BASE}/api/wishlistItems/delete/${WishlistItem_id}`)

@@ -104,7 +104,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangeFname}
-          value={fname}
+          defaultValue={fname}
+          key="fname"
           placeholder=""
           keyboardType="default"
           inputMode="text"
@@ -129,7 +130,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangeLname}
-          value={lname}
+          defaultValue={lname}
+          key="lname"
           placeholder=""
           keyboardType="default"
           inputMode="text"
@@ -154,7 +156,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangePhone}
-          value={phone}
+          defaultValue={phone}
+          key="phone"
           placeholder=""
           keyboardType="phone-pad"
           inputMode="tel"
@@ -179,7 +182,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangeCity}
-          value={city}
+          defaultValue={city}
+          key="city"
           placeholder=""
           keyboardType="default"
           inputMode="text"
@@ -204,7 +208,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangeStreet}
-          value={street}
+          defaultValue={street}
+          key="street"
           placeholder=""
           keyboardType="default"
           inputMode="text"
@@ -229,7 +234,8 @@ export default function PageContent() {
             styles.container__input,
           ]}
           onChangeText={onChangeHome}
-          value={home}
+          defaultValue={home}
+          key="home"
           placeholder=""
           keyboardType="default"
           inputMode="text"
@@ -255,7 +261,8 @@ export default function PageContent() {
               styles.container__input,
             ]}
             onChangeText={onChangeBday}
-            value={bday}
+            defaultValue={bday}
+            key="bday"
             placeholder=""
             keyboardType="default"
             inputMode="text"
@@ -281,7 +288,8 @@ export default function PageContent() {
               styles.container__input,
             ]}
             onChangeText={onChangeGender}
-            value={gender}
+            defaultValue={gender}
+            key="gender"
             placeholder=""
             keyboardType="default"
             inputMode="text"

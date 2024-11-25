@@ -28,7 +28,7 @@ type PopularProduct = {
 const item_list_data: PopularProduct[] = [
   {
     title: "Вибрані товари",
-    link: "/wishlist",
+    link: "/favorite",
     source: require("@/assets/images/icons/like-icon-yellow.png"),
   },
   {

@@ -2,7 +2,7 @@ import { ThemedView } from "@/components/ThemedView";
 import TextButton from "@/components/buttons/TextButton";
 import ViewButton from "@/components/buttons/ViewButton";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { DEFAULT_PRODUCT_FILTER_LIMIT } from "./constants";
 import { router, useNavigation } from "expo-router";
@@ -17,6 +17,18 @@ export default function ProductNavigation({
   limit: number;
   totalCount: number;
 }) {
+  const buttonCount = useMemo(() => {
+    return Math.max(Math.ceil(totalCount / DEFAULT_PRODUCT_FILTER_LIMIT), 1);
+  }, [totalCount]);
+
+  const buttons = useMemo(() => {
+    return Array.from({
+      length: buttonCount,
+    }).map((v, i) => (
+      <ProductNavigationButton i={i} limit={limit} offset={offset} key={i} />
+    ));
+  }, [totalCount]);
+
   return (
     <ThemedView style={styles.navigation}>
       {offset + limit >= totalCount ? null : (
@@ -40,68 +52,57 @@ export default function ProductNavigation({
           Показати ще
         </TextButton>
       )}
-      <View style={[styles.navigation__offset_button_list]}>
-        {Array.from({
-          length: Math.max(
-            Math.ceil(totalCount / DEFAULT_PRODUCT_FILTER_LIMIT),
-            1
-          ),
-        }).map((v, i) => {
-          // console.log(
-          //   offset,
-          //   limit,
-          //   offset / DEFAULT_PRODUCT_FILTER_LIMIT,
-          //   (offset + limit) / DEFAULT_PRODUCT_FILTER_LIMIT
-          // );
-
-          const color =
-            i >= Math.floor(offset / DEFAULT_PRODUCT_FILTER_LIMIT) &&
-            i < Math.floor((offset + limit) / DEFAULT_PRODUCT_FILTER_LIMIT)
-              ? useThemeColor({}, "secondary_background")
-              : useThemeColor(
-                  {
-                    light: "#D9D9D9",
-                    dark: "#D9D9D9",
-                  },
-                  "surface_outline_background"
-                );
-          // console.log(i * DEFAULT_PRODUCT_FILTER_LIMIT);
-
-          return (
-            <ViewButton
-              key={i}
-              pressableProps={{
-                style: [styles.navigation__offset_button_wrap],
-                onPress: () => {
-                  router.setParams({
-                    limit: DEFAULT_PRODUCT_FILTER_LIMIT.toString(),
-                    offset: (i * DEFAULT_PRODUCT_FILTER_LIMIT).toString(),
-                  });
-                  mainScrollViewRef.current?.scrollTo({
-                    y: 0,
-                    animated: true,
-                  });
-                },
-              }}
-              underlayProps={{
-                style: styles.navigation__offset_button_wrap_overlay,
-              }}
-              conteinerProps={{
-                style: [
-                  styles.navigation__offset_button,
-                  {
-                    backgroundColor: color,
-                  },
-                ],
-              }}
-            ></ViewButton>
-          );
-        })}
-      </View>
+      <View style={[styles.navigation__offset_button_list]}>{buttons}</View>
     </ThemedView>
   );
 }
 
+function ProductNavigationButton({ offset, limit, i }) {
+  const color1 = useThemeColor({}, "secondary_background");
+  const color2 = useThemeColor(
+    {
+      light: "#D9D9D9",
+      dark: "#D9D9D9",
+    },
+    "surface_outline_background"
+  );
+  const color =
+    i >= Math.floor(offset / DEFAULT_PRODUCT_FILTER_LIMIT) &&
+    i < Math.floor((offset + limit) / DEFAULT_PRODUCT_FILTER_LIMIT)
+      ? color1
+      : color2;
+  // console.log(i * DEFAULT_PRODUCT_FILTER_LIMIT);
+
+  return (
+    <ViewButton
+      key={i}
+      pressableProps={{
+        style: [styles.navigation__offset_button_wrap],
+        onPress: () => {
+          router.setParams({
+            limit: DEFAULT_PRODUCT_FILTER_LIMIT.toString(),
+            offset: (i * DEFAULT_PRODUCT_FILTER_LIMIT).toString(),
+          });
+          mainScrollViewRef.current?.scrollTo({
+            y: 0,
+            animated: true,
+          });
+        },
+      }}
+      underlayProps={{
+        style: styles.navigation__offset_button_wrap_overlay,
+      }}
+      conteinerProps={{
+        style: [
+          styles.navigation__offset_button,
+          {
+            backgroundColor: color,
+          },
+        ],
+      }}
+    ></ViewButton>
+  );
+}
 const styles = StyleSheet.create({
   navigation: {
     paddingVertical: 32,

@@ -8,8 +8,10 @@ import { Sizes } from "@/constants/Sizes";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { usePopupContext } from "@/context/PopupContext";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
+import { useAppContext } from "@/context/AppProvider";
 
 export default function Header() {
+  const { user, setUser } = useAppContext();
   const popoverContext = usePopoverContext();
   if (!popoverContext) return;
   const popupContext = usePopupContext();
@@ -41,7 +43,11 @@ export default function Header() {
       <IconButton
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
-          onPress: () => {},
+          onPress: () => {
+            setPopoverVisible(false);
+            setPopupVisible(false);
+            router.navigate("/filter");
+          },
         }}
         conteinerProps={{
           style: styles.header__button__container,
@@ -59,7 +65,7 @@ export default function Header() {
           onPress: () => {
             setPopoverVisible(false);
             setPopupVisible(false);
-            router.push("/");
+            router.navigate("/(home)");
             mainScrollViewRef.current?.scrollTo({
               y: 0,
               animated: false,
@@ -75,7 +81,7 @@ export default function Header() {
           colorName: "primary_text",
         }}
       >
-        CORYPHAM
+        CORY
       </TextButton>
 
       <View
@@ -90,9 +96,15 @@ export default function Header() {
         pressableProps={{
           style: [styles.header__button, styles.header__button_icon],
           onPress: () => {
-            popoverComponentName.current = "PopupMenu";
-            setPopoverData({});
-            setPopoverVisible(true);
+            if (user) {
+              popoverComponentName.current = "PopupMenu";
+              setPopoverData({});
+              setPopoverVisible(true);
+              return;
+            }
+            popupComponentName.current = "PopupSignIn";
+            setPopupData({});
+            setPopupVisible(true);
           },
         }}
         conteinerProps={{

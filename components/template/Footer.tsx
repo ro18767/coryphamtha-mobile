@@ -267,9 +267,7 @@ export default function Footer() {
         </AccordionItem>
         <AccordionItem title="соціальні мережі">
           <View style={styles.footer__AccordionItem__contacts_items_wrap}>
-            <Image
-              source={require("@/assets/images/icons/social-networks-icon.png")}
-            />
+         
           </View>
         </AccordionItem>
       </ThemedView>
