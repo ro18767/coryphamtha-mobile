@@ -106,6 +106,15 @@ export default function Header() {
             setPopupData({});
             setPopupVisible(true);
           },
+          onLongPress: () => {
+            if (user) {
+              router.navigate("/account");
+              return;
+            }
+            popupComponentName.current = "PopupSignIn";
+            setPopupData({});
+            setPopupVisible(true);
+          },
         }}
         conteinerProps={{
           style: styles.header__button__container,

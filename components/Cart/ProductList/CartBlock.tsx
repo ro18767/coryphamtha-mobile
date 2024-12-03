@@ -1,11 +1,47 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import TextButton from "@/components/buttons/TextButton";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import ProductList from "./ProductList";
+import { router } from "expo-router";
+import { usePopupContext } from "@/context/PopupContext";
+import { useAppContext } from "@/context/AppProvider";
 
 export default function CartBlock() {
+  const popupContext = usePopupContext();
+  const { loading, user, setUser } = useAppContext();
+
+  if (!popupContext) return;
+
+  useEffect(() => {
+    if (loading) return;
+    if (!popupContext) return;
+
+    const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+  }, [loading]);
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
   return (
     <ThemedView style={styles.navigation} colorName="none">
       <ThemedText
@@ -17,7 +53,10 @@ export default function CartBlock() {
       <ProductList />
       <TextButton
         pressableProps={{
-          onPress: () => {},
+          onPress: () => {
+            setPopupVisible(false);
+            router.navigate("/create_order");
+          },
         }}
         conteinerProps={{
           colorName: "secondary_background",

@@ -10,7 +10,7 @@ import { usePopupContext } from "@/context/PopupContext";
 import { usePopoverContext } from "@/context/PopoverContext";
 import IconButton from "@/components/buttons/IconButton";
 import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
-import { useAppContext } from "@/context/AppProvider";
+import { updateCartItems, useAppContext } from "@/context/AppProvider";
 import { URL_BASE } from "@/constants/glabals";
 
 export default function ProductPage() {
@@ -33,8 +33,7 @@ export function ProductDisplay() {
   const popoverContext = usePopoverContext();
   const popupContext = usePopupContext();
 
-  const { products } = useAppContext();
-
+  const { products, setCartItems, user } = useAppContext();
   const [showThankYouPopover, setShowThankYouPopover] = useState(false);
 
   const product = products.find((p) => +p.id === +product_id);
@@ -65,6 +64,37 @@ export function ProductDisplay() {
     ["Матеріал", "Вельвет"],
     ["Подія", "Новий рік"],
   ];
+
+  function addCartItem(product_id: number) {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
+    const fd = new FormData();
+    fd.append("user_id", String(user.id));
+    fd.append("product_id", String(product_id));
+    fd.append("quantity", "1");
+
+    fetch(`${URL_BASE}/api/cartItems/create`, {
+      method: "post",
+      body: fd,
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        // console.log(data);
+        updateCartItems(setCartItems);
+
+        setPopupVisible(false);
+        popupComponentName.current = "PopupCart";
+        setPopupData({});
+        setPopupVisible(true);
+      });
+  }
   return (
     <>
       <ThemedView style={styles.main_wrap} colorName="surface_background">
@@ -255,7 +285,9 @@ export function ProductDisplay() {
                   style: styles.container__form__submit_button_wrap,
                 }}
                 pressableProps={{
-                  onPress: () => {},
+                  onPress: () => {
+                    addCartItem(+product.id)
+                  },
                 }}
                 conteinerProps={{
                   style: styles.container__form__submit_button,

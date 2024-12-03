@@ -4,9 +4,42 @@ import Product from "./Product";
 import { useEffect, useState } from "react";
 import { URL_BASE } from "@/constants/glabals";
 import { useAppContext } from "@/context/AppProvider";
+import { usePopupContext } from "@/context/PopupContext";
+import { router } from "expo-router";
 
 export default function ProductList() {
-  const { user, wishlistItems, products } = useAppContext();
+  const { loading, user, wishlistItems, products } = useAppContext();
+
+  const popupContext = usePopupContext();
+  useEffect(() => {
+    if (loading) return;
+    if (!popupContext) return;
+
+    const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+    console.log('====================================');
+    console.log('navigate');
+    console.log('====================================');
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+  }, [loading]);
   if (user == null) return;
   if (!("id" in user)) return;
   return (

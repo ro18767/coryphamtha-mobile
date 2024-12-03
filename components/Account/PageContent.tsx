@@ -1,22 +1,16 @@
 import { StyleSheet, TextInput, View, Image } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import TextButton from "@/components/buttons/TextButton";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import ViewButton from "../buttons/ViewButton";
 import { URL_BASE } from "@/constants/glabals";
-import { useAppContext } from "@/context/AppProvider";
+import { updateAddresses, useAppContext } from "@/context/AppProvider";
+import { usePopupContext } from "@/context/PopupContext";
+import { router } from "expo-router";
 
 export default function PageContent() {
-  const { user, setUser } = useAppContext();
-  if (user == null) return;
-  if (!("id" in user)) return;
-  if (!("firstName" in user)) return;
-  if (!("lastName" in user)) return;
-  if (!("phone" in user)) return;
-  if (!("sex" in user)) return;
-  if (!("birthday" in user)) return;
-  if (!("email" in user)) return;
+  const { loading, user, setUser, addresses, setAddresses } = useAppContext();
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const color = useThemeColor({}, "secondary_outline_text");
@@ -27,28 +21,109 @@ export default function PageContent() {
     },
     "none"
   );
-  const [editMode, setEditMode] = useState(false);
-  const [fname, onChangeFname] = useState<string>(String(user.firstName ?? ""));
-  const [lname, onChangeLname] = useState<string>(String(user.lastName ?? ""));
-  const [phone, onChangePhone] = useState<string>(String(user.phone ?? ""));
-  const [city, onChangeCity] = useState<string>("");
-  const [street, onChangeStreet] = useState<string>("");
-  const [home, onChangeHome] = useState<string>("");
-  const [bday, onChangeBday] = useState<string>(String(user.birthday ?? ""));
-  const [gender, onChangeGender] = useState<string>(String(user.sex ?? ""));
-
-  function updateUser() {
+  const address = useMemo(() => {
+    if (loading) return;
     if (user == null) return;
-    if (!("id" in user)) return;
-    if (user.id == null) return;
+    if (!user.address_id) return;
+    return addresses.find((db_address) => db_address.id === user?.address_id);
+  }, [loading, user]);
+  const [editMode, setEditMode] = useState(false);
+  const [fname, onChangeFname] = useState<string>(
+    String(user?.firstName ?? "")
+  );
+  const [lname, onChangeLname] = useState<string>(String(user?.lastName ?? ""));
+  const [phone, onChangePhone] = useState<string>(String(user?.phone ?? ""));
+  const [city, onChangeCity] = useState<string>(address?.city ?? "");
+  const [street, onChangeStreet] = useState<string>(address?.street ?? "");
+  const [home, onChangeHome] = useState<string>(address?.house ?? "");
+  const [bday, onChangeBday] = useState<string>(String(""));
+  const [gender, onChangeGender] = useState<string>(String(""));
+
+  const popupContext = usePopupContext();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!popupContext) return;
+
+    const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+
+    onChangeFname(String(user?.firstName ?? ""));
+    onChangeLname(String(user?.lastName ?? ""));
+    onChangePhone(String(user?.phone ?? ""));
+    onChangeCity(String(address?.city ?? ""));
+    onChangeStreet(String(address?.street ?? ""));
+    onChangeHome(String(address?.house ?? ""));
+    onChangeBday(String(""));
+    onChangeGender(String(""));
+  }, [loading]);
+
+  if (user == null) return;
+  if (!("id" in user)) return;
+  if (!("firstName" in user)) return;
+  if (!("lastName" in user)) return;
+  if (!("phone" in user)) return;
+  if (!("email" in user)) return;
+
+  if (!popupContext) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+  function updateUser() {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
+    if (user.id == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
 
     const fd = new FormData();
+    fd.append("city", city);
+    fd.append("street", street);
+    fd.append("house", home);
     fd.append("firstName", fname);
     fd.append("lastName", lname);
     fd.append("birthday", bday);
     fd.append("sex", gender);
 
-    fetch(`${URL_BASE}/api/users/update/${user.id}`, {
+    let address_link = `${URL_BASE}/api/Addresses/create`;
+    if (address != null) {
+      address_link = `${URL_BASE}/api/Addresses/update/${address.id}`;
+    }
+    fetch(address_link, {
       method: "post",
       body: fd,
     })
@@ -56,20 +131,35 @@ export default function PageContent() {
         return res.json();
       })
       .then((data) => {
-        fetch(`${URL_BASE}/api/users/view/${user.id}`)
+
+        if(data?.status=== 'Address created successfully') {
+          fd.append("address_id", String(data.id));
+        }
+        
+        updateAddresses(setAddresses);
+
+        return fetch(`${URL_BASE}/api/users/update/${user.id}`, {
+          method: "post",
+          body: fd,
+        })
           .then((res) => {
             return res.json();
           })
           .then((data) => {
-            setUser(data.user);
-          });
-      });
+            return fetch(`${URL_BASE}/api/users/view/${user.id}`)
+              .then((res) => {
+                return res.json();
+              })
+              .then((data) => {
+                setUser(data.user);
 
-    // fd.append("city", city);
-    // fd.append("street", street);
-    // fd.append("home", home);
+                setEditMode(false);
+              });
+          });
+      })
   }
 
+  if (loading) return;
   return (
     <View style={styles.form_wrap}>
       <View style={styles.form_title_wrap}>
@@ -306,7 +396,6 @@ export default function PageContent() {
             pressableProps={{
               onPress: () => {
                 updateUser();
-                setEditMode(false);
               },
             }}
             conteinerProps={{

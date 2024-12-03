@@ -4,11 +4,43 @@ import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Product from "./Product";
 import { useAppContext } from "@/context/AppProvider";
+import { usePopupContext } from "@/context/PopupContext";
+import { router } from "expo-router";
 
 export default function ProductList() {
-  const { user, cartItems, products } = useAppContext();
+  const { loading, user, cartItems, products } = useAppContext();
+
+  const popupContext = usePopupContext();
+  if (!popupContext) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+  useEffect(() => {
+    if (loading) return;
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+  }, [loading]);
+
   if (user == null) return;
-  if (!("id" in user)) return;
+
   return (
     <ThemedView style={styles.product_list} colorName="none">
       {cartItems

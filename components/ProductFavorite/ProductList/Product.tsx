@@ -9,7 +9,8 @@ import {
 } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { useState } from "react";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 
 export default function Product({
@@ -27,12 +28,40 @@ export default function Product({
 }) {
   const popupContext = usePopupContext();
 
-  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
-  const { user, setWishlistItems, setCartItems } = useAppContext();
+  const { loading, user, setWishlistItems, setCartItems } = useAppContext();
   const borderColor = useThemeColor({}, "secondary_outline_text");
   const [pressed, setPressed] = useState(false);
 
+  useEffect(() => {
+    if (loading) return;
+    if (!popupContext) return;
+
+    const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(()=>{
+        router.navigate('/(home)')
+      }, 0)
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(()=>{
+        router.navigate('/(home)')
+      }, 0)
+      return;
+    }
+  }, [loading]);
+
   if (!popupContext) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
 
   function deleteWishlistItem(WishlistItem_id: number) {
     fetch(`${URL_BASE}/api/wishlistItems/delete/${WishlistItem_id}`)

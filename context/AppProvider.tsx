@@ -6,7 +6,9 @@ const AppContext = createContext<any>(null);
 export const useAppContext = () => useContext(AppContext);
 
 const AppProvider = ({ children }: { children: any }) => {
+  const [loading, setLoading] = useState<any | null>(true);
   const [user, setUser] = useState<any | null>(null);
+  const [addresses, setAddresses] = useState<any | null>(null);
   const [products, setProducts] = useState<any | null>([]);
   const [categories, setCategories] = useState<any | null>([]);
   const [filterTags, setFilterTags] = useState<any | null>([]);
@@ -20,35 +22,44 @@ const AppProvider = ({ children }: { children: any }) => {
   const [orderItems, setOrderItems] = useState<any | null>([]);
 
   useEffect(() => {
-    updateProducts(setProducts);
-    updateCategories(setCategories);
-    updateFilterTags(setFilterTags);
-    updateFilterTagCategories(setFilterTagCategories);
-    updateCartItems(setCartItems);
-    updateWishlistItems(setWishlistItems);
-    updateOrders(setOrders);
-    updateOrdersItems(setOrderItems);
-  }, []);
-
-  useEffect(() => {
-    AsyncStorage.getItem("user").then((jsonValue) => {
-      if (jsonValue == null) return;
-      const id = JSON.parse(jsonValue).id;
-
-      fetch(`${URL_BASE}/api/users/view/${id}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          if (data?.user) {
-            setUser(data.user);
-          } else {
+    Promise.allSettled([
+      updateAddresses(setAddresses),
+      updateProducts(setProducts),
+      updateCategories(setCategories),
+      updateFilterTags(setFilterTags),
+      updateFilterTagCategories(setFilterTagCategories),
+      updateCartItems(setCartItems),
+      updateWishlistItems(setWishlistItems),
+      updateOrders(setOrders),
+      updateOrdersItems(setOrderItems),
+      AsyncStorage.getItem("user")
+        .then((jsonValue) => {
+          if (jsonValue == null) {
             setUser(null);
+            return;
           }
+          const id = JSON.parse(jsonValue).id;
+
+          return fetch(`${URL_BASE}/api/users/view/${id}`)
+            .then((res) => {
+              return res.json();
+            })
+            .then((data) => {
+              if (data?.user) {
+                setUser(data.user);
+              } else {
+                setUser(null);
+              }
+            })
+            .catch(() => {
+              setUser(null);
+            });
         })
         .catch(() => {
           setUser(null);
-        });
+        }),
+    ]).then(() => {
+      setLoading(false);
     });
   }, []);
 
@@ -63,8 +74,11 @@ const AppProvider = ({ children }: { children: any }) => {
   return (
     <AppContext.Provider
       value={{
+        loading,
         user,
         setUser,
+        addresses,
+        setAddresses,
         products,
         setProducts,
         categories,
@@ -91,7 +105,7 @@ const AppProvider = ({ children }: { children: any }) => {
 export default AppProvider;
 
 export function updateProducts(callback) {
-  fetch(`${URL_BASE}/api/products`)
+  return fetch(`${URL_BASE}/api/products`)
     .then((res) => {
       return res.json();
     })
@@ -100,8 +114,20 @@ export function updateProducts(callback) {
       callback(data.products);
     });
 }
+
+export function updateAddresses(callback) {
+  return fetch(`${URL_BASE}/api/Addresses`)
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data.addresses);
+      callback(data.addresses);
+    });
+}
+
 export function updateCategories(callback) {
-  fetch(`${URL_BASE}/api/products/get_categories`)
+  return fetch(`${URL_BASE}/api/products/get_categories`)
     .then((res) => {
       return res.json();
     })
@@ -111,7 +137,7 @@ export function updateCategories(callback) {
     });
 }
 export function updateFilterTags(callback) {
-  fetch(`${URL_BASE}/api/products/get_filter_tags`)
+  return fetch(`${URL_BASE}/api/products/get_filter_tags`)
     .then((res) => {
       return res.json();
     })
@@ -121,7 +147,7 @@ export function updateFilterTags(callback) {
     });
 }
 export function updateFilterTagCategories(callback) {
-  fetch(`${URL_BASE}/api/products/get_filter_tag_categories`)
+  return fetch(`${URL_BASE}/api/products/get_filter_tag_categories`)
     .then((res) => {
       return res.json();
     })
@@ -132,7 +158,7 @@ export function updateFilterTagCategories(callback) {
 }
 
 export function updateCartItems(callback) {
-  fetch(`${URL_BASE}/api/cartItems`)
+  return fetch(`${URL_BASE}/api/cartItems`)
     .then((res) => {
       return res.json();
     })
@@ -143,7 +169,7 @@ export function updateCartItems(callback) {
 }
 
 export function updateWishlistItems(callback) {
-  fetch(`${URL_BASE}/api/wishlistItems`)
+  return fetch(`${URL_BASE}/api/wishlistItems`)
     .then((res) => {
       return res.json();
     })
@@ -153,7 +179,7 @@ export function updateWishlistItems(callback) {
     });
 }
 export function updateOrders(callback) {
-  fetch(`${URL_BASE}/api/orders`)
+  return fetch(`${URL_BASE}/api/Orders`)
     .then((res) => {
       return res.json();
     })
@@ -164,7 +190,7 @@ export function updateOrders(callback) {
 }
 
 export function updateOrdersItems(callback) {
-  fetch(`${URL_BASE}/api/OrderItems`)
+  return fetch(`${URL_BASE}/api/OrderItems`)
     .then((res) => {
       return res.json();
     })

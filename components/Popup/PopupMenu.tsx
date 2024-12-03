@@ -18,7 +18,7 @@ import { Sizes } from "@/constants/Sizes";
 import PopupSignIn from "./PopupSignIn";
 import React from "react";
 import { usePopoverContext } from "@/context/PopoverContext";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 type PopularProduct = {
   title: string;
   link: string;
@@ -89,7 +89,18 @@ export default function PopupMenu() {
         {item_list_data.map((v, i) => {
           const { link, source, title } = v;
           return (
-            <Link key={i} href={link} style={styles.link_row_wrap}>
+            <ViewButton
+              key={i}
+              pressableProps={{
+                onPress: () => {
+                  router.navigate(link);
+                  setPopoverVisible(false);
+                },
+              }}
+              conteinerProps={{
+                style: styles.link_row_wrap,
+              }}
+            >
               <View style={[styles.link_row, { borderColor }]}>
                 <View style={[styles.icon_wrap]}>
                   <Image source={source} style={[styles.icon]} />
@@ -101,7 +112,7 @@ export default function PopupMenu() {
                   {title}
                 </ThemedText>
               </View>
-            </Link>
+            </ViewButton>
           );
         })}
       </ThemedView>

@@ -5,12 +5,12 @@ import ProductList from "@/components/Cart/ProductList/ProductList";
 import { ThemedText } from "@/components/ThemedText";
 import { URL_BASE } from "@/constants/glabals";
 import {
+  useAppContext,
   updateCartItems,
   updateOrders,
   updateOrdersItems,
-  useAppContext,
 } from "@/context/AppProvider";
-import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
+import { usePopupContext } from "@/context/PopupContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -18,14 +18,13 @@ import { Image, StyleSheet, TextInput, View } from "react-native";
 
 export default function CartPage() {
   const {
+    loading,
     user,
-    setUser,
-    orders,
-    setOrders,
-    orderItems,
-    setOrderItems,
     cartItems,
     setCartItems,
+    setOrders,
+    setOrderItems,
+    products,
   } = useAppContext();
 
   const borderColor = useThemeColor({}, "secondary_outline_text");
@@ -39,11 +38,9 @@ export default function CartPage() {
   );
 
   const [editMode, setEditMode] = useState(true);
-  const [fname, onChangeFname] = useState<string>(
-    String(user?.firstName ?? "")
-  );
-  const [lname, onChangeLname] = useState<string>(String(user?.lastName ?? ""));
-  const [phone, onChangePhone] = useState<string>(String(user?.phone ?? ""));
+  const [fname, onChangeFname] = useState<string>(String(""));
+  const [lname, onChangeLname] = useState<string>(String(""));
+  const [phone, onChangePhone] = useState<string>(String(""));
   const [email, onChangeEmail] = useState<string>(String(""));
   const [city, onChangeCity] = useState<string>("");
   const [street, onChangeStreet] = useState<string>("");
@@ -51,14 +48,71 @@ export default function CartPage() {
   const [comment, onChangeComment] = useState<string>("");
   const [postOffice, onChangePostOffice] = useState<string>("");
 
-  function updateUser() {
-    if (user == null) return;
-    if (!("id" in user)) return;
-    if (user.id == null) return;
+  const popupContext = usePopupContext();
+
+  useEffect(() => {
+    if (loading) return;
+    if (!popupContext) return;
+
+    const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      setTimeout(() => {
+        router.navigate("/(home)");
+      }, 0);
+      return;
+    }
+
+    onChangeFname(user.firstName);
+    onChangeLname(user.lastName);
+    onChangePhone(user.phone);
+    onChangeEmail(user.email ?? "");
+  }, [loading]);
+
+  if (!popupContext) return;
+  if (user == null) return;
+
+  const { popupComponentName, setPopupData, setPopupVisible } = popupContext;
+  function createOrder() {
+    if (user == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
+    if (!("id" in user)) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
+    if (user.id == null) {
+      setPopupVisible(false);
+      popupComponentName.current = "PopupSignIn";
+      setPopupData({});
+      setPopupVisible(true);
+      return;
+    }
 
     const fd = new FormData();
-    fd.append("user_id", user.id);
-    fd.append("user_phone", "");
+    fd.append("user_id", String(user.id));
+    fd.append("user_phone", String(user.phone));
 
     fetch(`${URL_BASE}/api/Orders/create`, {
       method: "post",
@@ -68,48 +122,53 @@ export default function CartPage() {
         return res.json();
       })
       .then((data) => {
+        if (data.data.id) {
+          const order_id = data.data.id;
 
-        let promises = cartItems.map((ci) => {
-          const fd = new FormData();
-          fd.append("order_id", data.data.id);
-          fd.append("quantity", ci.quantity);
-          fd.append("product_id", ci.product_id);
-
-          fetch(`${URL_BASE}/api/OrderItems/create`, {
-            method: "post",
-            body: fd,
-          })
-            .then((res) => {
-              return res.json();
-            })
-            .then((data) => {
-
+          Promise.allSettled(
+            cartItems
+              .filter((cartItem) => cartItem.user_id === user.id)
+              .map((cartItem) => {
+                const fd = new FormData();
+                fd.append("order_id", String(order_id));
+                fd.append("product_id", String(cartItem.product_id));
+                fd.append("quantity", String(1));
+                return fetch(`${URL_BASE}/api/OrderItems/create`, {
+                  method: "post",
+                  body: fd,
+                })
+                  .then((res) => {
+                    return res.json();
+                  })
+                  .then((data) => {
+                    console.log(data);
+                  });
+              })
+          )
+            .then(() =>
+              Promise.allSettled(
+                cartItems
+                  .filter((cartItem) => cartItem.user_id === user.id)
+                  .map((cartItem) => {
+                    return fetch(
+                      `${URL_BASE}/api/cartItems/delete/${cartItem.product_id}`
+                    )
+                      .then((res) => {
+                        return res.json();
+                      })
+                      .then((data) => {
+                        console.log(data);
+                      });
+                  })
+              )
+            )
+            .then(() => {
+              updateCartItems(setCartItems);
               updateOrders(setOrders);
               updateOrdersItems(setOrderItems);
             });
-        });
-
-        Promise.allSettled(promises).then(() => {
-          cartItems.map((ci) => {
-            fetch(`${URL_BASE}/api/CartItems/delete/${ci.id}`)
-              .then((res) => {
-                return res.json();
-              })
-              .then((data) => {
-
-                updateCartItems(setCartItems);
-              });
-          });
-
-          router.navigate("/thank_you");
-          mainScrollViewRef.current?.scrollTo({
-            y: 0,
-            animated: false,
-          });
-        });
+        }
       });
-
-    // updateOrders(setOrders);
   }
   return (
     <>
@@ -321,7 +380,7 @@ export default function CartPage() {
             }}
             pressableProps={{
               onPress: () => {
-                updateUser();
+                createOrder();
                 setEditMode(false);
               },
             }}
