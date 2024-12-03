@@ -6,6 +6,7 @@ import { URL_BASE } from "@/constants/glabals";
 import { useAppContext } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
 import { router } from "expo-router";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 
 export default function ProductList() {
   const { loading, user, wishlistItems, products } = useAppContext();
@@ -26,6 +27,10 @@ export default function ProductList() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }
@@ -36,6 +41,10 @@ export default function ProductList() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }

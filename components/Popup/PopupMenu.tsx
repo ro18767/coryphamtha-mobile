@@ -19,6 +19,7 @@ import PopupSignIn from "./PopupSignIn";
 import React from "react";
 import { usePopoverContext } from "@/context/PopoverContext";
 import { Link, router } from "expo-router";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 type PopularProduct = {
   title: string;
   link: string;
@@ -94,6 +95,10 @@ export default function PopupMenu() {
               pressableProps={{
                 onPress: () => {
                   router.navigate(link);
+                  mainScrollViewRef.current?.scrollTo({
+                    y: 0,
+                    animated: false,
+                  });
                   setPopoverVisible(false);
                 },
               }}

@@ -11,6 +11,7 @@ import {
   updateOrdersItems,
 } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -63,6 +64,10 @@ export default function CartPage() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }
@@ -73,6 +78,10 @@ export default function CartPage() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }
@@ -145,8 +154,8 @@ export default function CartPage() {
                   });
               })
           )
-            .then(() =>
-              Promise.allSettled(
+            .then(() => {
+              return Promise.allSettled(
                 cartItems
                   .filter((cartItem) => cartItem.user_id === user.id)
                   .map((cartItem) => {
@@ -160,12 +169,21 @@ export default function CartPage() {
                         console.log(data);
                       });
                   })
-              )
-            )
+              );
+            })
             .then(() => {
-              updateCartItems(setCartItems);
-              updateOrders(setOrders);
-              updateOrdersItems(setOrderItems);
+              return Promise.allSettled([
+                updateCartItems(setCartItems),
+                updateOrders(setOrders),
+                updateOrdersItems(setOrderItems),
+              ]);
+            })
+            .finally(()=>{
+              router.navigate('/thank_you')
+              mainScrollViewRef.current?.scrollTo({
+                y: 0,
+                animated: false,
+              });
             });
         }
       });

@@ -8,6 +8,7 @@ import { URL_BASE } from "@/constants/glabals";
 import { updateAddresses, useAppContext } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
 import { router } from "expo-router";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 
 export default function PageContent() {
   const { loading, user, setUser, addresses, setAddresses } = useAppContext();
@@ -53,6 +54,10 @@ export default function PageContent() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }
@@ -63,6 +68,10 @@ export default function PageContent() {
       setPopupVisible(true);
       setTimeout(() => {
         router.navigate("/(home)");
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0);
       return;
     }

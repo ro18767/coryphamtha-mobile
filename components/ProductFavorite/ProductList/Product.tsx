@@ -8,6 +8,7 @@ import {
   useAppContext,
 } from "@/context/AppProvider";
 import { usePopupContext } from "@/context/PopupContext";
+import { mainScrollViewRef } from "@/hooks/mainScrollViewRef";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -44,6 +45,10 @@ export default function Product({
       setPopupVisible(true);
       setTimeout(()=>{
         router.navigate('/(home)')
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0)
       return;
     }
@@ -54,6 +59,10 @@ export default function Product({
       setPopupVisible(true);
       setTimeout(()=>{
         router.navigate('/(home)')
+        mainScrollViewRef.current?.scrollTo({
+          y: 0,
+          animated: false,
+        });
       }, 0)
       return;
     }

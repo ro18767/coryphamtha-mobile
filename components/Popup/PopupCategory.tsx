@@ -117,7 +117,6 @@ export default function PopupCategory() {
                 pressableProps={{
                   onPress: () => {
                     setPopoverVisible(false);
-                    router.navigate(`/filter`);
                     router.navigate({
                       pathname: `/filter`,
                       params:{

@@ -47,6 +47,10 @@ export default function Header() {
             setPopoverVisible(false);
             setPopupVisible(false);
             router.navigate("/filter");
+            mainScrollViewRef.current?.scrollTo({
+              y: 0,
+              animated: false,
+            });
           },
         }}
         conteinerProps={{
@@ -109,6 +113,10 @@ export default function Header() {
           onLongPress: () => {
             if (user) {
               router.navigate("/account");
+              mainScrollViewRef.current?.scrollTo({
+                y: 0,
+                animated: false,
+              });
               return;
             }
             popupComponentName.current = "PopupSignIn";
