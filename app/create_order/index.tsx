@@ -160,7 +160,7 @@ export default function CartPage() {
                   .filter((cartItem) => cartItem.user_id === user.id)
                   .map((cartItem) => {
                     return fetch(
-                      `${URL_BASE}/api/cartItems/delete/${cartItem.product_id}`
+                      `${URL_BASE}/api/cartItems/delete/${cartItem.id}`
                     )
                       .then((res) => {
                         return res.json();
