@@ -1,3 +1,4 @@
+import * as v from "valibot";
 import { usePopupContext } from "@/context/PopupContext";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet, TextInput, View } from "react-native";
@@ -11,6 +12,8 @@ import React from "react";
 import { URL_BASE } from "@/constants/glabals";
 import { useAppContext } from "@/context/AppProvider";
 import ViewButton from "../buttons/ViewButton";
+import { PhoneSchema } from "@/schemas/PhoneSchema";
+import { VerificationCodeSchema } from "@/schemas/VerificationCodeSchema";
 
 export default function PopupSignIn() {
   const popupContext = usePopupContext();
@@ -25,9 +28,27 @@ export default function PopupSignIn() {
   const [isCoonfirmation, setIsConfirmation] = useState(false);
   const { user, setUser } = useAppContext();
 
+  const [phone_issues, onChangePhone_issues] = useState<string[]>([]);
+  const [confirmCode_issues, onChangeConfirmCode_issues] = useState<string[]>(
+    []
+  );
+
   function login() {
+    let phoneForSending = v.safeParse(PhoneSchema, phone, {
+      abortPipeEarly: false,
+      abortEarly: false,
+    });
+    if (!phoneForSending.success) {
+      let phoneForSending_issues = phoneForSending.issues;
+      onChangePhone_issues(
+        phoneForSending_issues.map((issue) => issue.message)
+      );
+      return;
+    }
+
+    onChangePhone_issues([]);
     const fd = new FormData();
-    fd.append("phone", phone);
+    fd.append("phone", phoneForSending.output);
 
     fetch(`${URL_BASE}/api/users/login_by_phone`, {
       method: "post",
@@ -38,13 +59,37 @@ export default function PopupSignIn() {
       })
       .then((data) => {
         console.log(data);
+        setIsConfirmation(true);
       });
   }
 
   function verifyLogin() {
+    let phoneForSending = v.safeParse(PhoneSchema, phone, {
+      abortPipeEarly: false,
+      abortEarly: false,
+    });
+
+    let confirmCodeForSending = v.safeParse(
+      VerificationCodeSchema,
+      confirmCode,
+      {
+        abortPipeEarly: false,
+        abortEarly: false,
+      }
+    );
+    if (!confirmCodeForSending.success) {
+      let confirmCodeForSending_issues = confirmCodeForSending.issues;
+      onChangeConfirmCode_issues(
+        confirmCodeForSending_issues.map((issue) => issue.message)
+      );
+      return;
+    }
+
+    onChangeConfirmCode_issues([]);
+
     const fd = new FormData();
-    fd.append("phone", phone);
-    fd.append("code", confirmCode);
+    fd.append("phone", phoneForSending.output as string);
+    fd.append("code", confirmCodeForSending.output as string);
 
     fetch(`${URL_BASE}/api/users/verify_login`, {
       method: "post",
@@ -56,8 +101,6 @@ export default function PopupSignIn() {
       .then((data) => {
         if (data.status === "Phone error") return;
         setUser(data.user);
-        if (!data.user.address_id) {
-        }
 
         setPopupVisible(false);
       });
@@ -112,6 +155,14 @@ export default function PopupSignIn() {
                 keyboardType="phone-pad"
                 inputMode="tel"
               />
+              {phone_issues.map((phone_issue) => (
+                <ThemedText
+                  style={styles.container__input_error}
+                  colorName="primary_outline_text"
+                >
+                  {phone_issue}
+                </ThemedText>
+              ))}
             </View>
             <TextButton
               underlayProps={{
@@ -120,7 +171,6 @@ export default function PopupSignIn() {
               pressableProps={{
                 onPress: () => {
                   login();
-                  setIsConfirmation(true);
                 },
               }}
               conteinerProps={{
@@ -183,6 +233,14 @@ export default function PopupSignIn() {
                 keyboardType="number-pad"
                 inputMode="numeric"
               />
+              {confirmCode_issues.map((phone_issue) => (
+                <ThemedText
+                  style={styles.container__input_error}
+                  colorName="primary_outline_text"
+                >
+                  {phone_issue}
+                </ThemedText>
+              ))}
             </View>
             <TextButton
               underlayProps={{
@@ -285,6 +343,11 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   container__input_label: {
+    fontWeight: 500,
+    fontSize: 16,
+    lineHeight: 20,
+  },
+  container__input_error: {
     fontWeight: 500,
     fontSize: 16,
     lineHeight: 20,
