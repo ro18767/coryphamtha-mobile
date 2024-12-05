@@ -9,7 +9,7 @@ export const PhoneSchema = v.pipe(
         return input;
     }),
     v.nonEmpty("Номер обов'язковый"),
-    v.startsWith("+", 'Номер повынен починатысь з "+"'),
+    v.startsWith("+380", 'Номер повынен починатись з "+380"'),
     v.minLength(8, "Номер закороткий"),
     v.maxLength(12, "Номер задовгий"),
     v.check(
